@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kemija: laboratorij, nevarne snovi in zgradba atoma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Ena bralna kolona kot pri slovnici: snov → interaktivno → kviz. Barve PSE sledijo učbeniku: kovine modro, nekovine rdeče, polkovine zeleno. */
+:root{
+  --bg:#f3f5fa; --surface:#ffffff; --ink:#1b2131; --muted:#586176; --line:#dbe0ec;
+  --accent:#2b4ec2; --accent-soft:#e7ecff;
+  --good:#1d7f47; --good-soft:#e1f4e8; --bad:#c13a3a; --bad-soft:#fde7e7; --warn:#9a6410; --warn-soft:#fff1d1;
+  --display:"Lexend","Segoe UI",system-ui,sans-serif; --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --c-kov:#cfe0ff; --c-nek:#ffd6d3; --c-pol:#d3f0d9; --c-unk:#e6e8ee;
+  --c-alk:#ffd8b0; --c-zem:#ffeeb0; --c-pre:#d9e2f5; --c-lan:#f0d6f5; --c-akt:#e6cff0; --c-hal:#c9f0e8; --c-zla:#d6d9ff; --c-hlk:#f6e0c8; --c-pni:#e3f2c7; --c-ost:#eef0f4;
+  --c-s:#cfe0ff; --c-p:#ffd6d3; --c-d:#d3f0d9; --c-f:#e9dcf7;
+  --proton:#d64545; --neutron:#8a93a6; --electron:#2b4ec2;
+  --t-ink:#1b2131;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11141c; --surface:#1a1f2b; --ink:#e9ecf4; --muted:#a3abbe; --line:#2c3344;
+    --accent:#93abff; --accent-soft:#232c4a;
+    --good:#6fd39a; --good-soft:#163325; --bad:#ff8b8b; --bad-soft:#3a1c1f; --warn:#f2c36b; --warn-soft:#3a2e14;
+    --c-kov:#2b3a66; --c-nek:#5a2c2a; --c-pol:#24452f; --c-unk:#343a48;
+    --c-alk:#5a3a1b; --c-zem:#55491b; --c-pre:#2e3850; --c-lan:#4d2f55; --c-akt:#432b50; --c-hal:#1f4644; --c-zla:#30336a; --c-hlk:#4e3a24; --c-pni:#3a4a1f; --c-ost:#2a2f3c;
+    --c-s:#2b3a66; --c-p:#5a2c2a; --c-d:#24452f; --c-f:#3e2f5e;
+    --proton:#ff7a7a; --neutron:#a9b1c4; --electron:#93abff;
+    --t-ink:#eef1f8;
+    color-scheme: dark;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.65;letter-spacing:.01em}
+.wrap{max-width:860px;margin:0 auto;padding:24px 18px 80px}
+h1,h2,h3{font-family:var(--display);line-height:1.25;text-wrap:balance;margin:0}
+h1{font-size:1.9rem;font-weight:700} h2{font-size:1.45rem;font-weight:600} h3{font-size:1.1rem;font-weight:600}
+p{margin:0} b,strong{font-weight:700}
+.muted{color:var(--muted)}
+header{display:grid;gap:10px;padding:8px 0 18px}
+nav.jump{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);margin-bottom:22px}
+nav.jump a{font-family:var(--display);font-weight:600;font-size:.88rem;text-decoration:none;color:var(--accent);background:var(--accent-soft);padding:6px 12px;border-radius:999px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.divider{font-family:var(--display);font-weight:700;font-size:.95rem;color:var(--muted);border-top:2px solid var(--line);padding-top:14px;margin:6px 0 22px}
+section.part{display:grid;gap:16px;margin-bottom:46px;scroll-margin-top:70px}
+.part-head{display:flex;align-items:baseline;gap:12px}
+.part-head .n{font-family:var(--display);font-weight:700;color:var(--accent);font-size:1.2rem;min-width:1.6em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.def{border-left:6px solid var(--accent);font-size:1.12rem;border-radius:8px 22px 22px 8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card ul,.note ul{margin:0;padding-left:1.1em;display:grid;gap:4px}
+.tag{display:inline-block;font-family:var(--display);font-weight:600;font-size:.82rem;padding:2px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);justify-self:start}
+.note{background:var(--accent-soft);border-radius:18px;padding:12px 16px;display:grid;gap:6px}
+.formula{font-family:var(--display);font-weight:600;font-size:1.1rem;background:var(--surface);border:1px dashed var(--accent);border-radius:16px;padding:8px 14px;justify-self:start}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-weight:600}
+.flow span.step{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.flow .arr{color:var(--muted)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.97rem}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:600;font-size:.88rem;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.nuc{display:inline-flex;align-items:center;font-family:var(--display);font-weight:600;white-space:nowrap}
+.nuc .ns{display:inline-flex;flex-direction:column;font-size:.62em;line-height:1.05;text-align:right;margin-right:1px}
+.nuc .ch{font-size:.62em;align-self:flex-start;margin-left:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-block;padding:1px 10px;border-radius:999px;font-family:var(--display);font-weight:600;font-size:.85rem;color:var(--t-ink)}
+
+/* gumbi */
+button{font:inherit;color:inherit;cursor:pointer}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-family:var(--display);font-weight:600;font-size:.95rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.small{padding:4px 10px;font-size:.85rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.armed{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.fb{border-radius:16px;padding:10px 14px}
+.fb.ok{background:var(--good-soft)} .fb.no{background:var(--bad-soft)} .fb.info{background:var(--accent-soft)}
+.fix{color:var(--good);font-weight:700}
+.badv{color:var(--bad);font-weight:700}
+input[type=number],input[type=text],select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 10px}
+input[type=number]{width:6.5em}
+input.ok{border-color:var(--good);background:var(--good-soft)} input.bad{border-color:var(--bad);background:var(--bad-soft)}
+
+/* gradnik atoma */
+.builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:640px){.builder{grid-template-columns:1fr}}
+.atom-svg{width:100%;max-width:340px;justify-self:center;aspect-ratio:1}
+.counter{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:8px;align-items:center}
+.counter .lbl{font-family:var(--display);font-weight:600}
+.counter .val{font-family:var(--display);font-weight:700;font-size:1.3rem;min-width:2ch;text-align:center;font-variant-numeric:tabular-nums}
+.dotk{width:14px;height:14px;border-radius:50%;display:inline-block}
+.pm{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:1.2rem}
+.bigsym{font-family:var(--display);font-weight:700;font-size:2.6rem;line-height:1}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-variant-numeric:tabular-nums}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:700}
+
+/* PSE */
+.pse-wrap{overflow-x:auto;padding-bottom:4px}
+.pse{display:grid;grid-template-columns:repeat(18,minmax(34px,1fr));gap:3px;min-width:640px}
+.el{border:1px solid transparent;border-radius:9px;padding:2px 1px;text-align:center;line-height:1.05;background:var(--c-unk);color:var(--t-ink);min-height:42px;display:flex;flex-direction:column;justify-content:center}
+.el small{font-size:.58rem;opacity:.8;font-variant-numeric:tabular-nums}
+.el b{font-family:var(--display);font-size:.95rem}
+.el:hover{border-color:var(--ink)}
+.el.sel{outline:3px solid var(--accent);outline-offset:1px}
+.el.dim{opacity:.25}
+.el.ph{background:transparent;border:1px dashed var(--line);font-size:.6rem;color:var(--muted)}
+.pse .glab{font-family:var(--display);font-size:.65rem;color:var(--muted);text-align:center;align-self:end}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.9rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid var(--line)}
+.el-info{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.tile{width:92px;height:100px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--t-ink);font-variant-numeric:tabular-nums}
+.tile b{font-family:var(--display);font-size:2rem;line-height:1.1}
+.tile small{font-size:.75rem}
+
+/* orbitale */
+.orb-grid{display:grid;gap:6px}
+.orb-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.orb-row .on{font-family:var(--display);font-weight:600;width:2.6em;text-align:right}
+.box{width:40px;height:40px;border:2px solid var(--ink);border-radius:12px;background:var(--surface);font-size:1.15rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0;letter-spacing:-2px}
+.box.err{border-color:var(--bad);background:var(--bad-soft)}
+.box.s{background:var(--c-s)} .box.p{background:var(--c-p)} .box.d{background:var(--c-d)}
+.box[disabled]{cursor:default}
+.cfg{font-family:var(--display);font-weight:600;font-size:1.15rem}
+.cfg sup{font-size:.7em}
+.energy{font-size:.8rem;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg)}
+
+/* Ar */
+.iso-row{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:8px;align-items:center}
+@media (max-width:520px){.iso-row{grid-template-columns:1fr 1fr}}
+.chart svg{width:100%;height:auto}
+.steps{display:grid;gap:4px;font-variant-numeric:tabular-nums}
+
+/* GHS in pripomočki */
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.pick{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:8px;display:grid;justify-items:center;gap:4px;text-align:center;font-size:.85rem;font-family:var(--display);font-weight:600;line-height:1.2}
+.pick svg{width:70px;height:70px}
+.pick:hover{border-color:var(--accent)}
+.pick.sel{border-color:var(--accent);background:var(--accent-soft)}
+.pick.right{border-color:var(--good);background:var(--good-soft)}
+.pick.wrongpick{border-color:var(--bad);background:var(--bad-soft)}
+.lab svg{stroke:var(--ink);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.lab svg .liq{fill:var(--accent-soft);stroke:none}
+.lab svg .fillk{fill:var(--ink);stroke:none}
+
+/* kviz */
+.qcard{display:grid;gap:14px}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.qtext{font-size:1.15rem;font-weight:700}
+.qopts{display:grid;gap:8px}
+.qopt{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:10px 14px}
+.qopt:hover:not([disabled]){border-color:var(--accent)}
+.qopt[disabled]{cursor:default}
+.qopt.right{background:var(--good-soft);border-color:var(--good)}
+.qopt.wrongpick{background:var(--bad-soft);border-color:var(--bad)}
+.explain{border-radius:16px;padding:10px 14px}
+.explain.ok{background:var(--good-soft)} .explain.no{background:var(--bad-soft)}
+.choose{display:grid;gap:10px}
+.choose .row{display:flex;flex-wrap:wrap;gap:8px}
+.cbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-family:var(--display);font-weight:600;font-size:.9rem}
+.cbtn:hover{border-color:var(--accent)}
+.cbtn.big{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.cbtn span{opacity:.7;font-variant-numeric:tabular-nums}
+.res-row{display:grid;grid-template-columns:minmax(150px,1.4fr) 2fr auto;gap:12px;align-items:center;font-variant-numeric:tabular-nums}
+.res-row .bar i.g{background:var(--good)} .res-row .bar i.w{background:var(--warn)} .res-row .bar i.b{background:var(--bad)}
+.pill{font-family:var(--display);font-weight:600;font-size:.8rem;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.pill.g{background:var(--good-soft);color:var(--good)} .pill.w{background:var(--warn-soft);color:var(--warn)} .pill.b{background:var(--bad-soft);color:var(--bad)}
+.wronglist{display:grid;gap:10px}
+.wronglist div{border-left:4px solid var(--bad);padding:4px 12px;border-radius:0 12px 12px 0}
+/* navodila za naloge */
+.how{background:var(--warn-soft);border-radius:20px;padding:14px 18px;display:grid;gap:6px}
+.how h3{font-size:1rem;color:var(--warn)}
+.how ol{margin:0;padding-left:1.3em;display:grid;gap:4px}
+.how .eg{font-family:var(--display);font-weight:600;background:var(--surface);border-radius:10px;padding:1px 8px}
+/* izotopi */
+.iso-pick{display:flex;flex-wrap:wrap;gap:8px}
+.iso-view{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.iso-card{background:var(--bg);border-radius:18px;padding:12px;display:grid;justify-items:center;gap:6px;text-align:center}
+.iso-card svg{width:120px;height:120px}
+.iso-card .big{font-family:var(--display);font-weight:700;font-size:1.3rem}
+.cfg-in{width:100%;max-width:420px;font-family:var(--display)!important;font-size:1.1rem!important}
+@media (max-width:520px){
+  body{font-size:17px} h1{font-size:1.55rem}
+  .wrap{padding:16px 16px 64px}
+  nav.jump{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  nav.jump a{white-space:nowrap;flex:none}
+  .card{padding:14px 14px}
+  .counter{grid-template-columns:auto 1fr auto auto auto;gap:6px}
+  .orb-row{gap:6px} .box{width:36px;height:36px}
+  .btns .btn{flex:1 1 auto}
+  .res-row{grid-template-columns:1fr auto} .res-row .bar{grid-column:1 / -1;order:3}
+  .el-info{grid-template-columns:1fr}
+}
+
+/* telefon: bolj kompaktno */
+@media (max-width:600px){
+  body{font-size:15.5px;line-height:1.5}
+  h1{font-size:1.35rem} h2{font-size:1.15rem} h3{font-size:.98rem}
+  header{gap:6px;padding:4px 0 10px}
+  .wrap{padding:10px 12px 48px}
+  nav.jump{margin-left:-12px;margin-right:-12px;padding:6px 12px;margin-bottom:14px;gap:6px}
+  nav.jump a{font-size:.78rem;padding:4px 10px}
+  section.part{gap:10px;margin-bottom:28px;scroll-margin-top:50px}
+  .part-head{gap:8px} .part-head .n{font-size:1rem}
+  .card{padding:11px 12px;gap:7px;border-radius:18px}
+  .def{font-size:1rem}
+  .grid2{gap:10px;grid-template-columns:1fr}
+  .note,.how{padding:10px 12px;gap:4px;border-radius:16px}
+  .how h3{font-size:.9rem}
+  .how ol,.card ul,.note ul{gap:2px}
+  th,td{padding:6px 8px} table{font-size:.88rem}
+  .btn{padding:6px 12px;font-size:.86rem}
+  .btns{gap:6px}
+  .fb,.explain{padding:8px 11px}
+  .formula{font-size:.95rem;padding:6px 10px}
+  .atom-svg{max-width:190px}
+  .bigsym{font-size:2rem}
+  .counter .val{font-size:1.1rem} .pm{width:34px;height:34px;font-size:1rem}
+  .box{width:30px;height:30px;font-size:.95rem;border-radius:9px}
+  .orb-row{gap:4px} .orb-grid{gap:4px} .orb-row .on{width:2.2em;font-size:.85rem}
+  .cfg{font-size:1rem}
+  .iso-view{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+  .iso-card{padding:8px;gap:3px;font-size:.82rem} .iso-card svg{width:70px;height:70px} .iso-card .big{font-size:1.05rem}
+  .pick-grid{grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px}
+  .pick{padding:6px;font-size:.74rem;border-radius:16px} .pick svg{width:46px;height:46px}
+  .tile{width:72px;height:80px} .tile b{font-size:1.5rem}
+  .qtext{font-size:1rem} .qopt{padding:8px 12px}
+  .divider{margin:2px 0 14px;padding-top:10px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Kemija: laboratorij, nevarne snovi in zgradba atoma</h1>
+  <p class="muted">Poglavji 1 in 2 iz učbenika. Najprej preberi snov. Potem se igraj z interaktivnimi deli. Na koncu reši kviz, ki ti pokaže, kaj moraš še vaditi.</p>
+</header>
+<nav class="jump" aria-label="Deli strani">
+  <a href="#s1">1–3 Laboratorij</a>
+  <a href="#s4">4–5 Nevarne snovi</a>
+  <a href="#s6">6–9 Atom in ioni</a>
+  <a href="#s10">10–11 PSE in orbitale</a>
+  <a href="#igra">12–17 Interaktivno</a>
+  <a href="#kviz">18 Kviz</a>
+</nav>
+
+<main>
+<p class="divider">Snov · Poglavje 1: Kemija je eksperimentalna veda</p>
+
+<section class="part" id="s1">
+  <div class="part-head"><span class="n">1</span><h2>Kaj je kemija?</h2></div>
+  <div class="card def"><p><b>Kemija</b> je naravoslovna veda, ki proučuje <b>snovi</b>, njihove <b>lastnosti</b> in <b>spremembe</b>.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Snov</h3>
+      <p>Snov je <b>vse, kar ima maso in zavzame prostor</b>.</p>
+      <p class="muted">baker, žica, olje, zrak</p>
+      <p>Poznamo <b>čiste snovi</b> (elementi in spojine) in <b>zmesi</b>.</p>
+    </div>
+    <div class="card">
+      <h3>Eksperiment (poskus)</h3>
+      <p>Znanstveni postopek, s katerim nekaj <b>ugotovimo ali dokažemo</b>.</p>
+      <p><b>Raziskava</b> = več eksperimentov. Če sodeluje več ved, je raziskava <b>interdisciplinarna</b>.</p>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Pogoji in veličine</h3>
+      <ul>
+        <li><b>Pogoji</b>: temperatura, tlak, katalizator.</li>
+        <li><b>Spremenljivka</b>: veličina, ki med poskusom spreminja vrednost.</li>
+        <li><b>Konstanta</b>: veličina, ki se ne spreminja.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Masa se ne spremeni</h3>
+      <p>Pri kemijski reakciji <b>masa snovi ostane enaka</b> (zakon o ohranitvi mase, <b>Lavoisier</b>).</p>
+      <p class="muted">Tlak je lahko konstanten (odprta posoda) ali se spreminja (zaprta posoda, kjer nastaja plin).</p>
+    </div>
+  </div>
+  <div class="note">
+    <p><b>Konstanti, ki ju boš rabil:</b></p>
+    <ul>
+      <li>Avogadrova konstanta: <b>N<sub>A</sub> = 6,02 · 10<sup>23</sup> mol<sup>−1</sup></b></li>
+      <li>Splošna plinska konstanta: <b>R = 8,31 kPa L mol<sup>−1</sup> K<sup>−1</sup></b></li>
+    </ul>
+    <p class="muted">Fritz Pregl (1869–1930), rojen v Ljubljani, je leta 1923 dobil Nobelovo nagrado za kemijo.</p>
+  </div>
+</section>
+
+<section class="part" id="s2">
+  <div class="part-head"><span class="n">2</span><h2>Laboratorijski pripomočki</h2></div>
+  <p>Večina pripomočkov je iz <b>stekla</b>, ker je odporno na snovi in na segrevanje. Vse pripomočke z risbami najdeš v <a href="#lab">delu 17</a>, kjer jih lahko klikaš.</p>
+  <div class="note">
+    <p><b>Enote za prostornino:</b> 1 L = 1 dm<sup>3</sup> = 1000 mL · 1 mL = 1 cm<sup>3</sup></p>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Za kaj</th><th>Pripomoček</th><th>Zapomni si</th></tr></thead>
+    <tbody>
+      <tr><td><b>poskusi, raztopine</b></td><td>epruveta, čaša, buča, erlenmajerica</td><td>Čaša in erlenmajerica merita prostornino samo <b>približno</b>.</td></tr>
+      <tr><td><b>natančno merjenje prostornine</b></td><td>merilni valj, pipeta, bireta, merilna buča</td><td>Najbolj natančna je <b>pipeta</b>. Bireta je za <b>titriranje</b>.</td></tr>
+      <tr><td><b>ločevanje zmesi</b></td><td>lij s filtrirnim papirjem, Büchnerjev lij, lij ločnik, hladilnik</td><td>Lij ločnik loči tekočine, ki se <b>ne mešajo</b>. Hladilnik je za <b>destilacijo</b>.</td></tr>
+      <tr><td><b>segrevanje</b></td><td>plinski gorilnik, špiritni gorilnik, grelna plošča, žarilni lonček</td><td>Plamen plinskega gorilnika doseže do <b>1200 °C</b>.</td></tr>
+      <tr><td><b>trdne snovi</b></td><td>terilnica s pestilom, spatula, izparilnica, eksikator</td><td>Eksikator ščiti pred <b>vlago</b>.</td></tr>
+      <tr><td><b>merjenje</b></td><td>tehtnica, areometer</td><td>Analitska tehtnica je najbolj natančna. Areometer meri <b>gostoto</b>.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="part" id="s3">
+  <div class="part-head"><span class="n">3</span><h2>Varno delo in plinski gorilnik</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Plinski (Bunsenov) gorilnik</h3>
+      <p class="muted">Robert Bunsen in Peter Desaga, 1855.</p>
+      <p><b>Prižiganje:</b></p>
+      <div class="flow"><span class="step">zrak zaprt</span><span class="arr">→</span><span class="step">odpri plin</span><span class="arr">→</span><span class="step">prižgi</span><span class="arr">→</span><span class="step">uravnaj plamen</span></div>
+      <p><b>Ugašanje:</b> najprej zapri <b>zrak</b>, nato <b>plin</b>.</p>
+      <p class="muted">Gorivo: propan-butan ali zemeljski plin. Špiritni gorilnik gori na etanol in ima nižjo temperaturo.</p>
+    </div>
+    <div class="card">
+      <h3>Pravila</h3>
+      <ul>
+        <li>Nosi <b>haljo</b> in <b>zaščitna očala</b>.</li>
+        <li>Ustje vroče epruvete obrni <b>stran od ljudi</b>.</li>
+        <li>Vročo epruveto primi z <b>držalom</b> (leseno ščipalko).</li>
+        <li>S strupenimi hlapi delaš v <b>digestoriju</b>.</li>
+        <li>V izparilnico daš <b>vrelne kamenčke</b>, da ne brizga.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tehtnice</h3>
+      <ul>
+        <li>kuhinjska: <b>premalo natančna</b></li>
+        <li>precizna (šola): ±0,1 g ali ±0,01 g</li>
+        <li>analitska: <b>najbolj natančna</b>, ima <b>zaščitno komoro</b> proti prepihu</li>
+      </ul>
+      <p class="muted">Osnovna enota za maso je kilogram (kg).</p>
+    </div>
+  </div>
+</section>
+
+<section class="part" id="s4">
+  <div class="part-head"><span class="n">4</span><h2>Nevarne snovi: GHS, H- in P-stavki</h2></div>
+  <div class="card def"><p><b>GHS</b> (Globally Harmonized System) je mednarodni sistem za označevanje nevarnih snovi. Ima <b>9 piktogramov</b>.</p></div>
+  <p>Piktogram je <b>kvadrat, postavljen na ogljišče</b>, z <b>rdečim robom</b> in črnim znakom na beli podlagi. Vse piktograme lahko klikaš v <a href="#ghs">delu 16</a>.</p>
+  <div class="grid2">
+    <div class="card"><span class="tag">fizikalne</span><h3>Nevarne fizikalne lastnosti</h3><p>eksplozivno, vnetljivo, oksidativno, plini pod tlakom, jedko za kovine</p></div>
+    <div class="card"><span class="tag">zdravje</span><h3>Nevarno za zdravje</h3><p>akutna strupenost (lobanja), klicaj, mutageno ali rakotvorno, jedko za kožo</p></div>
+    <div class="card"><span class="tag">okolje</span><h3>Nevarno za okolje</h3><p>nevarno za vodno okolje (riba in drevo)</p></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>H-stavki = nevarnost</h3>
+      <p>Opišejo, <b>kako je snov nevarna</b> (H = hazard).</p>
+      <p class="muted">H225 Lahko vnetljiva tekočina in hlapi.<br>H319 Povzroča hudo draženje oči.</p>
+    </div>
+    <div class="card">
+      <h3>P-stavki = previdnost</h3>
+      <p>Povejo, <b>kaj moraš narediti</b> (P = precaution).</p>
+      <p class="muted">P102 Hraniti zunaj dosega otrok.<br>P210 Hraniti ločeno od vročine, isker, plamena.</p>
+    </div>
+  </div>
+  <div class="note"><p><b>Varnostni list</b> je dokument (običajno od proizvajalca) z lastnostmi in nevarnostmi snovi, navodili za varno uporabo, shranjevanje in ravnanje ob nesreči.</p></div>
+</section>
+
+<section class="part" id="s5">
+  <div class="part-head"><span class="n">5</span><h2>Toksikologija in zelena kemija</h2></div>
+  <div class="card def"><p><b>Toksikologija</b> je veda o strupenih snoveh in njihovem učinkovanju.</p></div>
+  <p><b>Paracelsus</b> (1493–1541), »oče toksikologije«: <i>Samo odmerek loči zdravilo od strupa.</i></p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Od česa je odvisna nevarnost?</h3>
+      <ul><li>lastnost snovi</li><li>količina (odmerek)</li><li>način vnosa</li><li>čas in pogostost izpostavljenosti</li></ul>
+    </div>
+    <div class="card">
+      <h3>Načini vstopa v telo</h3>
+      <ul><li><b>oralno</b>: skozi usta</li><li><b>respiratorno</b>: z vdihavanjem</li><li><b>dermalno</b>: skozi kožo</li></ul>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Pojem</th><th>Pomen</th></tr></thead>
+    <tbody>
+      <tr><td><b>odmerek (doza)</b></td><td>količina snovi, ki pride v organizem. Enota: <b>mg/kg telesne mase</b>.</td></tr>
+      <tr><td><b>učinek / odziv</b></td><td>kaj snov naredi / kako organizem reagira</td></tr>
+      <tr><td><b>ksenobiotik</b></td><td>snov v organizmu, ki je organizem sam ne naredi (zdravila, aditivi, pesticidi)</td></tr>
+      <tr><td><b>akutna izpostavitev</b></td><td>kratek čas, velika količina</td></tr>
+      <tr><td><b>kronična izpostavitev</b></td><td>dolgo časa, majhne količine</td></tr>
+      <tr><td><b>LD<sub>50</sub></b></td><td>srednja smrtna doza: umre <b>50 %</b> testiranih živali. <b>Manjša LD<sub>50</sub> = bolj strupena snov.</b></td></tr>
+      <tr><td><b>NOAEL</b></td><td><b>največji</b> odmerek <b>brez</b> opaznega škodljivega učinka</td></tr>
+      <tr><td><b>LOAEL</b></td><td><b>najmanjši</b> odmerek, pri katerem <b>opazimo</b> škodljiv učinek</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">
+    <p><b>Vrstni red:</b> NOAEL &lt; LOAEL &lt; LD<sub>50</sub>. Benzen: 100 &lt; 200 &lt; 930 mg/kg telesne mase.</p>
+    <p class="muted">Ena najbolj strupenih snovi je botulinski toksin.</p>
+  </div>
+  <div class="card">
+    <h3>Zelena kemija</h3>
+    <p>Področje kemije, ki se osredotoča na <b>vpliv kemije na okolje</b>. Ima <b>12 načel</b>.</p>
+    <p class="muted">Eno od njih: preprečiti nastanek odpadkov je bolje kot jih kasneje čistiti.</p>
+  </div>
+</section>
+
+<p class="divider">Snov · Poglavje 2: Zgradba atomov in ionov, periodni sistem</p>
+
+<section class="part" id="s6">
+  <div class="part-head"><span class="n">6</span><h2>Delci v atomu</h2></div>
+  <div class="card def"><p><b>Atom</b> je najmanjši delec s kemijskimi lastnostmi določenega elementa.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Atomsko jedro</h3>
+      <p><span class="dotk" style="background:var(--proton)"></span> <b>protoni</b> p<sup>+</sup> (naboj +1)</p>
+      <p><span class="dotk" style="background:var(--neutron)"></span> <b>nevtroni</b> n<sup>0</sup> (naboj 0)</p>
+      <p class="muted">Protoni + nevtroni = <b>nukleoni</b>.</p>
+    </div>
+    <div class="card">
+      <h3>Elektronska ovojnica</h3>
+      <p><span class="dotk" style="background:var(--electron)"></span> <b>elektroni</b> e<sup>−</sup> (naboj −1)</p>
+      <p>Gibljejo se z veliko hitrostjo okoli jedra.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Delec</th><th>Simbol</th><th class="num">Masa</th><th class="num">Relativni naboj</th></tr></thead>
+    <tbody>
+      <tr><td>proton</td><td>p<sup>+</sup></td><td class="num">1,6726 · 10<sup>−24</sup> g</td><td class="num">+1</td></tr>
+      <tr><td>nevtron</td><td>n<sup>0</sup></td><td class="num">1,6749 · 10<sup>−24</sup> g</td><td class="num">0</td></tr>
+      <tr><td>elektron</td><td>e<sup>−</sup></td><td class="num">0,00091 · 10<sup>−24</sup> g</td><td class="num">−1</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">
+    <ul>
+      <li>Proton in nevtron sta skoraj <b>enako težka</b>. Elektron je <b>veliko lažji</b>.</li>
+      <li>Skoraj vsa masa (<b>več kot 99,9 %</b>) je v <b>jedru</b>.</li>
+      <li>Število protonov = število elektronov, zato je atom <b>električno nevtralen</b>.</li>
+      <li>Jedro je približno <b>100 000-krat manjše</b> od atoma.</li>
+    </ul>
+    <p class="muted">Demokrit: atomos = nedeljiv. Rutherford je leta 1911 objavil model atoma z jedrom.</p>
+  </div>
+</section>
+
+<section class="part" id="s7">
+  <div class="part-head"><span class="n">7</span><h2>Vrstno in masno število</h2></div>
+  <div class="grid2">
+    <div class="card">
+      <span class="tag">Z</span>
+      <h3>Vrstno (atomsko) število</h3>
+      <p>Z = število <b>protonov</b> v jedru. V atomu je to tudi število elektronov.</p>
+      <p>Vsak element ima svoje Z. <b>Z pove, kateri element je.</b></p>
+    </div>
+    <div class="card">
+      <span class="tag">A</span>
+      <h3>Masno število</h3>
+      <p>A = število <b>protonov + nevtronov</b>.</p>
+      <p>Masnega števila <b>ni</b> v periodnem sistemu.</p>
+    </div>
+  </div>
+  <p class="formula">število nevtronov = A − Z</p>
+  <div class="card">
+    <p>Zapis: <b>A levo zgoraj</b>, <b>Z levo spodaj</b>.</p>
+    <p style="font-size:2rem"><span class="nuc"><span class="ns"><span>27</span><span>13</span></span>Al</span></p>
+    <p>Aluminij: 13 protonov, 13 elektronov, 27 − 13 = <b>14 nevtronov</b>.</p>
+  </div>
+  <div class="note"><p><b>Pazi:</b> masno število je <b>celo število</b> (Al: 27). Relativna atomska masa ni (Al: 26,98).</p></div>
+</section>
+
+<section class="part" id="s8">
+  <div class="part-head"><span class="n">8</span><h2>Izotopi in relativna atomska masa</h2></div>
+  <div class="card def"><p><b>Izotopi</b> so atomi istega elementa, ki se razlikujejo v <b>masnem številu</b> oz. <b>številu nevtronov</b>.</p></div>
+  <div class="card">
+    <h3>Na kratko, po korakih</h3>
+    <ol style="margin:0;padding-left:1.3em;display:grid;gap:4px">
+      <li>Element določa <b>število protonov</b>. Vsak ogljik ima 6 protonov.</li>
+      <li>Število <b>nevtronov</b> pa je lahko različno. Ogljik ima lahko 6, 7 ali 8 nevtronov.</li>
+      <li>Zato so različno <b>težki</b> (A = p + n). To so <b>izotopi</b>.</li>
+    </ol>
+    <p class="muted">Primerjava: ista znamka kolesa, enkrat brez prtljage, enkrat z enim nahrbtnikom. Še vedno je isto kolo (isti element), samo težje je (večja masa).</p>
+  </div>
+  <div class="card">
+    <h3>Klikni in primerjaj izotope</h3>
+    <div class="iso-pick" id="iso-pick"></div>
+    <div class="iso-view" id="iso-view"></div>
+    <div class="fb info" id="iso-note"></div>
+  </div>
+  <p>Izotopi imajo <b>enake kemijske</b> lastnosti, a različne <b>fizikalne</b> lastnosti in različno <b>razširjenost</b> v naravi.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Vodikov izotop</th><th>Zapis</th><th class="num">p / e / n</th><th>Zanimivost</th></tr></thead>
+    <tbody>
+      <tr><td><b>protij</b></td><td><span class="nuc"><span class="ns"><span>1</span><span>1</span></span>H</span></td><td class="num">1 / 1 / 0</td><td>najbolj pogost (več kot 99,98 %)</td></tr>
+      <tr><td><b>devterij</b> (D)</td><td><span class="nuc"><span class="ns"><span>2</span><span>1</span></span>H</span></td><td class="num">1 / 1 / 1</td><td>težka voda D<sub>2</sub>O, vre pri 101,4 °C</td></tr>
+      <tr><td><b>tritij</b> (T)</td><td><span class="nuc"><span class="ns"><span>3</span><span>1</span></span>H</span></td><td class="num">1 / 1 / 2</td><td>radioaktiven, samo v sledovih</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Zanimivo</h3>
+      <ul>
+        <li>En sam naravni izotop: npr. Be, F, Na, Al, P.</li>
+        <li>Uran: največ je <sup>238</sup>U (99,27 %). Za jedrske elektrarne (Krško) potrebujemo <sup>235</sup>U.</li>
+        <li>Radioaktivni izotopi razpadajo. Uporabni so v medicini.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Relativna atomska masa A<sub>r</sub></h3>
+      <p>Pove, <b>kolikokrat je masa atoma večja od 1/12 mase atoma <sup>12</sup>C</b>.</p>
+      <p>A<sub>r</sub> <b>nima enote</b>. Najdeš jo v periodnem sistemu.</p>
+    </div>
+  </div>
+  <p class="formula">A<sub>r</sub> = delež<sub>1</sub> · A<sub>r</sub>(izotop 1) + delež<sub>2</sub> · A<sub>r</sub>(izotop 2) + …</p>
+  <div class="card">
+    <h3>Primer: baker</h3>
+    <p><sup>63</sup>Cu: 69,15 % (A<sub>r</sub> = 62,9296) · <sup>65</sup>Cu: 30,85 % (A<sub>r</sub> = 64,9278)</p>
+    <p><b>Korak 1:</b> odstotke pretvori v deleže (deli s 100): 69,15 % → 0,6915 in 30,85 % → 0,3085.</p>
+    <p><b>Korak 2:</b> vsak delež pomnoži z maso izotopa: 0,6915 · 62,9296 = 43,52 in 0,3085 · 64,9278 = 20,03.</p>
+    <p><b>Korak 3:</b> seštej: 43,52 + 20,03 = <b>63,55</b>. To je A<sub>r</sub>(Cu).</p>
+    <p class="muted">A<sub>r</sub> je bližje izotopu, ki ga je več. Klor ima A<sub>r</sub> = 35,45, zato je več <sup>35</sup>Cl kot <sup>37</sup>Cl.</p>
+  </div>
+</section>
+
+<section class="part" id="s9">
+  <div class="part-head"><span class="n">9</span><h2>Ioni</h2></div>
+  <div class="card def"><p><b>Ioni</b> so delci z <b>električnim nabojem</b>. Od atoma se razlikujejo v <b>številu elektronov</b>.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <span class="tag">+</span>
+      <h3>Kation = pozitiven ion</h3>
+      <p>Atom <b>odda</b> elektrone.</p>
+      <p>K → K<sup>+</sup> + e<sup>−</sup><br>Ca → Ca<sup>2+</sup> + 2e<sup>−</sup><br>Al → Al<sup>3+</sup> + 3e<sup>−</sup></p>
+      <p><b>Ime:</b> slovensko ime + <b>-ev/-ov ion</b>: kalijev ion, kalcijev ion, aluminijev ion.</p>
+    </div>
+    <div class="card">
+      <span class="tag">−</span>
+      <h3>Anion = negativen ion</h3>
+      <p>Atom <b>sprejme</b> elektrone.</p>
+      <p>Cl + e<sup>−</sup> → Cl<sup>−</sup><br>O + 2e<sup>−</sup> → O<sup>2−</sup><br>S + 2e<sup>−</sup> → S<sup>2−</sup></p>
+      <p><b>Ime:</b> latinska osnova + <b>-idni ion</b>: kloridni, bromidni, oksidni, sulfidni ion.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Skupina</th><th>Kaj naredi</th><th>Naboj</th><th>Primer</th></tr></thead>
+    <tbody>
+      <tr><td><b>1.</b></td><td>odda 1 e<sup>−</sup></td><td>1+</td><td>Na<sup>+</sup>, K<sup>+</sup></td></tr>
+      <tr><td><b>2.</b></td><td>odda 2 e<sup>−</sup></td><td>2+</td><td>Mg<sup>2+</sup>, Ca<sup>2+</sup></td></tr>
+      <tr><td><b>13.</b></td><td>odda 3 e<sup>−</sup></td><td>3+</td><td>Al<sup>3+</sup></td></tr>
+      <tr><td><b>16.</b></td><td>sprejme 2 e<sup>−</sup></td><td>2−</td><td>O<sup>2−</sup>, S<sup>2−</sup></td></tr>
+      <tr><td><b>17.</b></td><td>sprejme 1 e<sup>−</sup></td><td>1−</td><td>Cl<sup>−</sup>, Br<sup>−</sup></td></tr>
+      <tr><td><b>18.</b></td><td>običajno <b>ne</b> tvori ionov</td><td>—</td><td>že stabilni</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">
+    <ul>
+      <li>Nastali ioni imajo <b>enako razporeditev elektronov kot žlahtni plin</b>. To je zelo stabilno.</li>
+      <li>Naboj pišemo <b>desno zgoraj</b>: najprej številka, nato znak (2+). Številke 1 ne pišemo: K<sup>+</sup>.</li>
+      <li>Prehodni elementi imajo lahko različne naboje: Fe<sup>2+</sup> in Fe<sup>3+</sup>. Zato: <b>železov(III) ion</b> ali železov(3+) ion.</li>
+      <li>Nastanek kationa je <b>endotermen</b> proces: potrebuje energijo.</li>
+      <li>Vodik tvori kation H<sup>+</sup> ali anion H<sup>−</sup> (hidridni ion).</li>
+    </ul>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Ion</th><th class="num">p<sup>+</sup></th><th class="num">e<sup>−</sup></th><th class="num">n<sup>0</sup></th><th>Primerjava z atomom</th></tr></thead>
+    <tbody>
+      <tr><td><span class="nuc"><span class="ns"><span>27</span><span>13</span></span>Al<span class="ch">3+</span></span> aluminijev ion</td><td class="num">13</td><td class="num">10</td><td class="num">14</td><td>3 elektrone <b>manj</b></td></tr>
+      <tr><td><span class="nuc"><span class="ns"><span>31</span><span>15</span></span>P<span class="ch">3−</span></span> fosfidni ion</td><td class="num">15</td><td class="num">18</td><td class="num">16</td><td>3 elektrone <b>več</b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="card">
+    <h3>Večatomni ioni</h3>
+    <p>amonijev NH<sub>4</sub><sup>+</sup>, fosfatni PO<sub>4</sub><sup>3−</sup>, hidrogenkarbonatni HCO<sub>3</sub><sup>−</sup>, peroksidni O<sub>2</sub><sup>2−</sup></p>
+    <p><b>Kako šteješ:</b> seštej protone vseh atomov. Elektroni = protoni − naboj.</p>
+    <p class="muted">PO<sub>4</sub><sup>3−</sup>: p = 15 + 4 · 8 = 47, e = 47 + 3 = 50. NH<sub>4</sub><sup>+</sup>: p = 7 + 4 · 1 = 11, e = 11 − 1 = 10.</p>
+  </div>
+  <div class="card">
+    <h3>Kaj vse pišemo ob simbolu?</h3>
+    <p style="font-size:2rem"><span class="nuc"><span class="ns"><span>A</span><span>Z</span></span>X<span class="ns" style="text-align:left;margin-left:2px"><span>naboj</span><span>število atomov</span></span></span></p>
+    <p class="muted">Levo zgoraj masno število, levo spodaj vrstno število, desno zgoraj naboj, desno spodaj število atomov v delcu.</p>
+  </div>
+</section>
+
+<section class="part" id="s10">
+  <div class="part-head"><span class="n">10</span><h2>Periodni sistem elementov</h2></div>
+  <div class="card def"><p><b>Element</b> je čista snov, ki je s kemijsko reakcijo ne moremo pretvoriti v enostavnejše snovi.</p></div>
+  <div class="card def"><p><b>Periodni sistem</b> je preglednica vseh znanih elementov, razvrščenih po <b>naraščajočem vrstnem številu</b> in <b>ponavljajočih se kemijskih lastnostih</b>.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Zgodovina</h3>
+      <ul>
+        <li><b>Berzelius</b> (1813): simboli z eno ali dvema črkama, prva je velika (H, He).</li>
+        <li><b>Mendelejev</b> (1869): razporedil 63 elementov in napovedal še neznane.</li>
+        <li><b>Moseley</b> (1913): razvrstil po naboju jedra = številu protonov.</li>
+      </ul>
+      <p class="muted">V naravi je 94 elementov, uradno potrjenih je 118.</p>
+    </div>
+    <div class="card">
+      <h3>Zgradba</h3>
+      <ul>
+        <li><b>7 period</b>: vodoravne vrstice.</li>
+        <li><b>18 skupin</b>: navpični stolpci.</li>
+        <li><b>Glavne skupine</b>: 1., 2. in 13.–18. (staro: I–VIII).</li>
+        <li><b>Prehodni elementi</b>: 3.–12. skupina.</li>
+        <li><b>Lantanoidi</b> (57–71) in <b>aktinoidi</b> (89–103) so spodaj posebej.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card" style="border-left:6px solid var(--c-kov)">
+      <h3>Kovine (levo)</h3>
+      <ul><li>jih je največ</li><li>kovinski lesk</li><li>dobro prevajajo tok in toploto</li><li>večinoma srebrnosive (zlato rumeno, baker rdečkast)</li><li>živo srebro je tekoče</li></ul>
+    </div>
+    <div class="card" style="border-left:6px solid var(--c-nek)">
+      <h3>Nekovine (desno)</h3>
+      <p>Na desni strani. Med njimi je tudi <b>vodik</b>, čeprav je levo zgoraj.</p>
+    </div>
+    <div class="card" style="border-left:6px solid var(--c-pol)">
+      <h3>Polkovine (vmes)</h3>
+      <p>Imajo deloma kovinske in deloma nekovinske lastnosti. Npr. B, Si, Ge, As.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Ime skupine</th><th>Skupina</th><th>Lastnost</th></tr></thead>
+    <tbody>
+      <tr><td><b>alkalijske kovine</b></td><td>1. (I)</td><td>zelo reaktivne. Vodik <b>ni</b> alkalijska kovina.</td></tr>
+      <tr><td><b>zemeljskoalkalijske kovine</b></td><td>2. (II)</td><td>manj reaktivne kot alkalijske</td></tr>
+      <tr><td><b>pniktogeni</b></td><td>15. (V)</td><td>posebno ime</td></tr>
+      <tr><td><b>halkogeni</b></td><td>16. (VI)</td><td>posebno ime</td></tr>
+      <tr><td><b>halogeni</b></td><td>17. (VII)</td><td>zelo reaktivne nekovine; reaktivnost pada navzdol (<b>F najbolj</b>)</td></tr>
+      <tr><td><b>žlahtni plini</b></td><td>18. (VIII)</td><td>skoraj ne reagirajo; ksenon ima največ spojin, He in Ne nimata spojin</td></tr>
+      <tr><td><b>žlahtne (plemenite) kovine</b></td><td>—</td><td>najmanj reaktivne kovine: Au, Ag, Pt …</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><p><b>Primer:</b> Z = 50 je kositer (Sn), 5. perioda, 14. skupina (IV). Je element glavne skupine, ne prehodni.</p></div>
+</section>
+
+<section class="part" id="s11">
+  <div class="part-head"><span class="n">11</span><h2>Elektronska ovojnica in orbitale</h2></div>
+  <p>Elektronov ne moremo videti in ne moremo natančno določiti njihove poti. Lahko pa izračunamo <b>verjetnost</b>, kje so.</p>
+  <div class="card def"><p><b>Atomska orbitala</b> je prostor okoli jedra, v katerem je elektron z <b>95 % verjetnostjo</b>.</p></div>
+  <p>Orbitale se razlikujejo v <b>velikosti</b>, <b>obliki</b> in <b>usmerjenosti v prostoru</b>.</p>
+  <div class="grid2">
+    <div class="card"><span class="tag">s</span><h3>s-orbitala</h3><p><b>kroglasta</b>, 1 orbitala, <b>2 e<sup>−</sup></b></p><p class="muted">1s &lt; 2s &lt; 3s (večja številka = večja)</p></div>
+    <div class="card"><span class="tag">p</span><h3>p-orbitale</h3><p>oblika <b>pentlje</b>, 3 orbitale (p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>), <b>6 e<sup>−</sup></b></p><p class="muted">med seboj so pravokotne</p></div>
+    <div class="card"><span class="tag">d</span><h3>d-orbitale</h3><p>5 orbital, <b>10 e<sup>−</sup></b></p><p class="muted">f-orbital ne obravnavamo</p></div>
+  </div>
+  <div class="card def"><p><b>Elektronska konfiguracija</b> je razporeditev elektronov po orbitalah.</p></div>
+  <div class="grid2">
+    <div class="card">
+      <span class="tag">1</span>
+      <h3>Princip izgradnje</h3>
+      <p>Elektroni najprej zasedejo orbitale z <b>nižjo energijo</b>.</p>
+      <p class="cfg" style="font-size:1rem">1s &lt; 2s &lt; 2p &lt; 3s &lt; 3p &lt; 4s &lt; 3d &lt; 4p &lt; 5s …</p>
+    </div>
+    <div class="card">
+      <span class="tag">2</span>
+      <h3>Paulijevo načelo</h3>
+      <p>V eni orbitali sta <b>največ 2 elektrona</b> z <b>nasprotnima spinoma</b> ↑↓ (elektronski par).</p>
+      <p class="muted">Wolfgang Pauli, 1925</p>
+    </div>
+    <div class="card">
+      <span class="tag">3</span>
+      <h3>Hundovo pravilo</h3>
+      <p>Enakovredne orbitale (npr. tri 2p) se najprej zapolnijo <b>po en elektron</b>, šele nato v pare.</p>
+      <p class="cfg" style="font-size:1rem">p³: [↑][↑][↑] ✔ · [↑↓][↑][ ] ✘</p>
+    </div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Element</th><th>Konfiguracija</th><th>Samski e<sup>−</sup></th></tr></thead>
+    <tbody>
+      <tr><td>H</td><td class="cfg">1s<sup>1</sup></td><td class="num">1</td></tr>
+      <tr><td>He</td><td class="cfg">1s<sup>2</sup></td><td class="num">0</td></tr>
+      <tr><td>Li</td><td class="cfg">1s<sup>2</sup> 2s<sup>1</sup></td><td class="num">1</td></tr>
+      <tr><td>O</td><td class="cfg">1s<sup>2</sup> 2s<sup>2</sup> 2p<sup>4</sup></td><td class="num">2</td></tr>
+      <tr><td>Ne</td><td class="cfg">1s<sup>2</sup> 2s<sup>2</sup> 2p<sup>6</sup></td><td class="num">0</td></tr>
+      <tr><td>Na</td><td class="cfg">1s<sup>2</sup> 2s<sup>2</sup> 2p<sup>6</sup> 3s<sup>1</sup></td><td class="num">1</td></tr>
+      <tr><td>Fe</td><td class="cfg">1s<sup>2</sup> 2s<sup>2</sup> 2p<sup>6</sup> 3s<sup>2</sup> 3p<sup>6</sup> 4s<sup>2</sup> 3d<sup>6</sup></td><td class="num">4</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note">
+    <p><b>Samski (neparni) elektroni</b> so sami v orbitali, brez para.</p>
+    <p><b>Krajši zapis:</b> del, ki je enak žlahtnemu plinu, zamenjaš s simbolom v oglatem oklepaju.</p>
+    <p class="cfg">Ga: [Ar] 4s<sup>2</sup> 3d<sup>10</sup> 4p<sup>1</sup></p>
+    <p><b>Iz PSE preberi:</b> 1. in 2. skupina = s-področje, 13.–18. = p-področje, 3.–12. = d-področje. Številka d-orbital je za <b>1 manjša</b> od periode (3d je v 4. periodi).</p>
+  </div>
+</section>
+
+<p class="divider">Interaktivno: klikaj in poskusi</p>
+
+<section class="part" id="igra">
+  <div class="part-head"><span class="n">12</span><h2>Gradnik atoma</h2></div>
+  <div class="how"><h3>Kaj narediš?</h3><ol><li>S tipkama <b>+</b> in <b>−</b> dodajaš ali odvzemaš protone, nevtrone in elektrone.</li><li>Zraven (na telefonu spodaj) vidiš, kateri element si sestavil, njegovo masno število in naboj.</li><li><b>Izziv:</b> klikni »🎲 Nov izziv«, preberi, kaj moraš sestaviti, nastavi delce in klikni »Preveri«.</li></ol><p class="muted">Namig: <b>protoni</b> določijo element. <b>Nevtroni</b> spremenijo samo maso (izotop). <b>Elektroni</b> spremenijo naboj (ion).</p></div>
+  <div class="card builder">
+    <svg class="atom-svg" id="atom-svg" viewBox="0 0 300 300" role="img" aria-label="Skica atoma"></svg>
+    <div style="display:grid;gap:12px">
+      <div class="counter" id="counters"></div>
+      <div style="display:flex;gap:14px;align-items:center">
+        <div class="bigsym" id="b-sym">—</div>
+        <div><b id="b-name">ni elementa</b><br><span class="muted" id="b-type"></span></div>
+      </div>
+      <dl class="kv" id="b-kv"></dl>
+    </div>
+  </div>
+  <div class="fb info" id="b-explain" aria-live="polite"></div>
+  <div class="card">
+    <h3>Izziv</h3>
+    <p id="b-task">Klikni »Nov izziv«.</p>
+    <div class="btns">
+      <button class="btn primary" id="b-check" type="button">Preveri</button>
+      <button class="btn" id="b-newtask" type="button">🎲 Nov izziv</button>
+      <button class="btn" id="b-reset" type="button">Počisti</button>
+    </div>
+    <div id="b-fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="part" id="pse-sec">
+  <div class="part-head"><span class="n">13</span><h2>Klikljiv periodni sistem</h2></div>
+  <div class="how"><h3>Kaj narediš?</h3><ol><li>Zgoraj izberi, kaj želiš pobarvati (npr. kovine/nekovine ali skupine).</li><li>Klikni katerikoli element. Spodaj se pokažejo njegovi podatki.</li><li><b>Izziv:</b> klikni »🎲 Nov izziv«, preberi namig in klikni pravi element v tabeli.</li></ol><p class="muted">Na telefonu tabelo podrsaj levo in desno.</p></div>
+  <div class="btns" id="pse-modes"></div>
+  <div class="legend" id="pse-legend"></div>
+  <div class="pse-wrap"><div class="pse" id="pse"></div></div>
+  <div class="card el-info" id="el-info"></div>
+  <div class="card">
+    <h3>Najdi element</h3>
+    <p id="pse-task">Klikni »Nov izziv«, nato klikni pravi element v tabeli.</p>
+    <div class="btns">
+      <button class="btn" id="pse-newtask" type="button">🎲 Nov izziv</button>
+      <button class="btn" id="pse-stoptask" type="button">Končaj izziv</button>
+    </div>
+    <div id="pse-fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="part" id="orb-sec">
+  <div class="part-head"><span class="n">14</span><h2>Polnjenje orbital</h2></div>
+  <div class="how"><h3>Kaj narediš?</h3><ol>
+    <li><b>Poglej, kako se polni:</b> s tipkama <b>+ elektron</b> in <b>− elektron</b> (ali drsnikom) dodajaš elektrone. Spodaj piše, katero pravilo velja.</li>
+    <li><b>Napolni sam:</b> dobiš element. Elektrone daš v škatlice (= orbitale) s klikanjem.</li>
+    <li><b>Napiši zapis:</b> dobiš element in sam napišeš njegovo elektronsko konfiguracijo.</li>
+  </ol></div>
+  <div class="btns" id="orb-modes">
+    <button class="btn on" type="button" data-m="show">Poglej, kako se polni</button>
+    <button class="btn" type="button" data-m="self">Napolni sam</button>
+    <button class="btn" type="button" data-m="write">Napiši zapis</button>
+  </div>
+  <div class="card" id="orb-show">
+    <div class="btns">
+      <button class="btn small" id="orb-minus" type="button" aria-label="En elektron manj">− elektron</button>
+      <input type="range" id="orb-range" min="1" max="36" value="8" aria-label="Vrstno število" style="flex:1;min-width:140px">
+      <button class="btn small" id="orb-plus" type="button" aria-label="En elektron več">+ elektron</button>
+      <button class="btn small" id="orb-play" type="button">▶ Predvajaj od H</button>
+    </div>
+    <p><b id="orb-title"></b></p>
+    <div style="display:flex;gap:10px"><span class="energy">energija →</span><div class="orb-grid" id="orb-diagram"></div></div>
+    <p class="cfg" id="orb-cfg"></p>
+    <p class="muted" id="orb-short"></p>
+    <div class="fb info" id="orb-why"></div>
+  </div>
+  <div class="card" id="orb-self" hidden>
+    <div class="how"><h3>Kako napolniš?</h3><ol>
+      <li>Preberi, kateri element imaš in <b>koliko elektronov</b> moraš postaviti.</li>
+      <li>Vsaka škatlica je ena orbitala. <b>Klikni škatlico</b>: 1 klik = ↑ (en elektron), 2 klika = ↑↓ (par), 3 klike = ↑↑ (narobe!), 4 kliki = spet prazna.</li>
+      <li>Polni <b>od spodaj navzgor</b> (1s, 2s, 2p, 3s …). Spodaj je najnižja energija.</li>
+      <li>Pri p in d škatlicah daj najprej v <b>vsako po en</b> ↑, šele potem pare (Hund).</li>
+      <li>Ko imaš vse elektrone, klikni <b>Preveri</b>. Če kaj ni prav, ti pove, katero pravilo si prekršil.</li>
+    </ol></div>
+    <p><b id="self-title"></b></p>
+    <div style="display:flex;gap:10px"><span class="energy">energija →</span><div class="orb-grid" id="self-diagram"></div></div>
+    <p class="muted" id="self-count"></p>
+    <div class="btns">
+      <button class="btn primary" id="self-check" type="button">Preveri</button>
+      <button class="btn" id="self-new" type="button">🎲 Nov element</button>
+      <button class="btn" id="self-clear" type="button">Počisti</button>
+      <button class="btn" id="self-solve" type="button">Pokaži rešitev</button>
+    </div>
+    <div id="self-fb" aria-live="polite"></div>
+  </div>
+  <div class="card" id="orb-write" hidden>
+    <div class="how"><h3>Kako napišeš?</h3><ol>
+      <li>Orbitale piši po vrsti: 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p.</li>
+      <li>Ker na tipkovnici ni malih številk zgoraj, napiši število elektronov <b>kar zraven</b>: namesto 1s² napiši <span class="eg">1s2</span>.</li>
+      <li>Med orbitalami pusti presledek. Primer za kisik (8 e⁻): <span class="eg">1s2 2s2 2p4</span></li>
+    </ol></div>
+    <p><b id="w-title"></b></p>
+    <div class="btns">
+      <input type="text" class="cfg-in" id="w-in" placeholder="npr. 1s2 2s2 2p4" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Tvoja konfiguracija">
+    </div>
+    <p class="muted">Tako se bere: <span class="cfg" id="w-preview">—</span></p>
+    <div class="btns">
+      <button class="btn primary" id="w-check" type="button">Preveri</button>
+      <button class="btn" id="w-new" type="button">🎲 Nov element</button>
+      <button class="btn" id="w-solve" type="button">Pokaži rešitev</button>
+    </div>
+    <div id="w-fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="part" id="ar-sec">
+  <div class="part-head"><span class="n">15</span><h2>Kalkulator relativne atomske mase</h2></div>
+  <div class="how"><h3>Kaj narediš?</h3><ol><li>V meniju <b>Element</b> izberi element. Vidiš njegove izotope in koliko jih je v naravi (%).</li><li>Graf pokaže, katerega izotopa je največ. Črta A<sub>r</sub> je vedno <b>bližje izotopu, ki ga je več</b>.</li><li>Spodaj je račun po korakih. Lahko spremeniš številke in vidiš, kako se A<sub>r</sub> spremeni.</li><li><b>Vaja:</b> klikni »🎲 Nov primer«, izračunaj na papir ali kalkulator, vpiši rezultat (npr. <span class="eg">63,55</span>) in klikni »Preveri«.</li></ol></div>
+  <div class="card">
+    <div class="btns">
+      <label for="ar-el"><b>Element:</b></label>
+      <select id="ar-el"></select>
+      <button class="btn small" id="ar-add" type="button">+ izotop</button>
+    </div>
+    <div id="ar-rows" style="display:grid;gap:8px"></div>
+    <p class="muted" id="ar-sum"></p>
+    <div class="chart" id="ar-chart"></div>
+    <div class="fb info steps" id="ar-steps"></div>
+  </div>
+  <div class="card">
+    <h3>Vaja: izračunaj sam</h3>
+    <div id="arq-box"></div>
+    <div class="btns">
+      <input type="text" inputmode="decimal" id="arq-in" placeholder="npr. 63,55" aria-label="Tvoj rezultat">
+      <button class="btn primary" id="arq-check" type="button">Preveri</button>
+      <button class="btn" id="arq-new" type="button">🎲 Nov primer</button>
+      <button class="btn" id="arq-solve" type="button" disabled>Pokaži postopek</button>
+    </div>
+    <div id="arq-fb" aria-live="polite"></div>
+  </div>
+  <div class="card">
+    <h3>Kalkulator LD<sub>50</sub></h3>
+    <p>Koliko snovi bi bilo smrtno za 50 % živali s to maso?</p>
+    <div class="btns">
+      <label>LD<sub>50</sub> (mg/kg) <input type="number" id="ld-val" value="16" min="0" step="any"></label>
+      <label>masa živali (kg) <input type="number" id="ld-mass" value="0.2" min="0" step="any"></label>
+    </div>
+    <p class="fb info" id="ld-out"></p>
+  </div>
+</section>
+
+<section class="part" id="ghs">
+  <div class="part-head"><span class="n">16</span><h2>GHS piktogrami</h2></div>
+  <div class="how"><h3>Kaj narediš?</h3><ol><li>Klikni piktogram. Spodaj piše, kaj pomeni.</li><li><b>Igra:</b> klikni »🎲 Nov izziv«, preberi opis in klikni pravi piktogram.</li></ol></div>
+  <div class="pick-grid" id="ghs-grid"></div>
+  <div class="fb info" id="ghs-info">Klikni piktogram.</div>
+  <div class="card">
+    <h3>Igra: kateri piktogram?</h3>
+    <p id="ghs-task">Klikni »Nov izziv«.</p>
+    <div class="btns"><button class="btn" id="ghs-new" type="button">🎲 Nov izziv</button></div>
+    <div id="ghs-fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="part" id="lab">
+  <div class="part-head"><span class="n">17</span><h2>Laboratorijski pripomočki</h2></div>
+  <div class="how"><h3>Kaj narediš?</h3><ol><li>Klikni pripomoček. Spodaj piše, za kaj ga uporabljamo.</li><li><b>Igra:</b> klikni »🎲 Nov izziv«, preberi opravilo in klikni pripomoček, ki ga potrebuješ.</li></ol></div>
+  <div class="pick-grid lab" id="lab-grid"></div>
+  <div class="fb info" id="lab-info">Klikni pripomoček.</div>
+  <div class="card">
+    <h3>Igra: kaj potrebuješ?</h3>
+    <p id="lab-task">Klikni »Nov izziv«.</p>
+    <div class="btns"><button class="btn" id="lab-new" type="button">🎲 Nov izziv</button></div>
+    <div id="lab-fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<p class="divider">Kviz</p>
+<section class="part" id="kviz">
+  <div class="part-head"><span class="n">18</span><h2>Kviz</h2></div>
+  <div class="card qcard" id="quiz"></div>
+</section>
+</main>
+</div>
+<script>
+(function(){
+"use strict";
+/* ---------- pomožne ---------- */
+function $(id){ return document.getElementById(id); }
+function el(tag, attrs, html){
+  const e = document.createElement(tag);
+  if(attrs) Object.keys(attrs).forEach(function(k){ if(k==="class") e.className=attrs[k]; else e.setAttribute(k, attrs[k]); });
+  if(html!==undefined) e.innerHTML = html;
+  return e;
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function fmt(n, d){ return (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toFixed(d).replace(".", ","); }
+function num(s){ return parseFloat(String(s).replace(",", ".").trim()); }
+function rnd(n){ return Math.floor(Math.random()*n); }
+function pick(a){ return a[rnd(a.length)]; }
+function shuffle(arr){ const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function chargeStr(c){ if(c===0) return ""; const a=Math.abs(c); return (a===1?"":a)+(c>0?"+":"−"); }
+function nuc(A, Z, sym, ch){
+  return '<span class="nuc"><span class="ns"><span>'+(A===null?"":A)+'</span><span>'+(Z===null?"":Z)+'</span></span>'+esc(sym)+(ch?'<span class="ch">'+chargeStr(ch)+'</span>':'')+'</span>';
+}
+function supify(s){ return s.replace(/(\d+[spdf])(\d+)/g, '$1<sup>$2</sup>'); }
+/* gumb, ki ga moraš klikniti dvakrat */
+const armed = {};
+function twoStep(btn, armedText, action){
+  btn.addEventListener("click", function(){
+    if(btn.disabled) return;
+    if(armed[btn.id]){ clearTimeout(armed[btn.id].t); btn.textContent = armed[btn.id].l; btn.classList.remove("armed"); delete armed[btn.id]; action(); return; }
+    armed[btn.id] = {l:btn.textContent, t:setTimeout(function(){ btn.textContent = armed[btn.id].l; btn.classList.remove("armed"); delete armed[btn.id]; }, 4000)};
+    btn.textContent = armedText; btn.classList.add("armed");
+  });
+}
+
+/* ---------- elementi ---------- */
+const SYM = "H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og".split(" ");
+const NAME = "vodik helij litij berilij bor ogljik dušik kisik fluor neon natrij magnezij aluminij silicij fosfor žveplo klor argon kalij kalcij skandij titan vanadij krom mangan železo kobalt nikelj baker cink galij germanij arzen selen brom kripton rubidij stroncij itrij cirkonij niobij molibden tehnecij rutenij rodij paladij srebro kadmij indij kositer antimon telur jod ksenon cezij barij lantan cerij prazeodim neodim prometij samarij evropij gadolinij terbij disprozij holmij erbij tulij iterbij lutecij hafnij tantal volfram renij osmij iridij platina zlato živo_srebro talij svinec bizmut polonij astat radon francij radij aktinij torij protaktinij uran neptunij plutonij americij kirij berkelij kalifornij einsteinij fermij mendelevij nobelij lavrencij raderfordij dubnij seaborgij borij hasij majtnerij darmštatij rentgenij kopernicij nihonij flerovij moskovij livermorij tenes oganeson".split(" ").map(function(s){ return s.replace("_"," "); });
+const AR = "1,008 4,003 6,94 9,012 10,81 12,01 14,01 16,00 19,00 20,18 22,99 24,31 26,98 28,09 30,97 32,06 35,45 39,95 39,10 40,08 44,96 47,87 50,94 52,00 54,94 55,85 58,93 58,69 63,55 65,38 69,72 72,63 74,92 78,97 79,90 83,80 85,47 87,62 88,91 91,22 92,91 95,95 [98] 101,07 102,91 106,42 107,87 112,41 114,82 118,71 121,76 127,60 126,90 131,29 132,91 137,33 138,91 140,12 140,91 144,24 [145] 150,36 151,96 157,25 158,93 162,50 164,93 167,26 168,93 173,05 174,97 178,49 180,95 183,84 186,21 190,23 192,22 195,08 196,97 200,59 204,38 207,2 208,98 [209] [210] [222] [223] [226] [227] 232,04 231,04 238,03 [237] [244] [243] [247] [247] [251] [252] [257] [258] [259] [262] [267] [268] [269] [270] [269] [278] [281] [282] [285] [286] [289] [290] [293] [294] [294]".split(" ");
+const NONMETAL = [1,2,6,7,8,9,10,15,16,17,18,34,35,36,53,54,86];
+const METALLOID = [5,14,32,33,51,52,85];
+const ROMAN = {1:"I",2:"II",13:"III",14:"IV",15:"V",16:"VI",17:"VII",18:"VIII"};
+const NOBLE = [2,10,18,36,54,86,118];
+function periodOf(z){ return z<=2?1: z<=10?2: z<=18?3: z<=36?4: z<=54?5: z<=86?6:7; }
+function groupOf(z){
+  if(z===1) return 1; if(z===2) return 18;
+  if(z<=18){ const s = z<=10?2:10; const o=z-s; return o<=2?o:o+10; }
+  if(z<=54){ return z<=36?z-18:z-36; }
+  const base = z<=86?54:86, o = z-base;
+  if(o<=2) return o;
+  if(o<=17) return null; /* lantanoidi / aktinoidi */
+  return o-14;
+}
+const EL = [];
+for(let z=1; z<=118; z++){
+  const g = groupOf(z), per = periodOf(z);
+  const lan = (z>=57&&z<=71), akt = (z>=89&&z<=103);
+  let kind = NONMETAL.indexOf(z)>=0 ? "nek" : METALLOID.indexOf(z)>=0 ? "pol" : "kov";
+  if(z>=104 && z!==118) kind = "unk";
+  if(z===118) kind = "unk";
+  let fam;
+  if(lan) fam="lan"; else if(akt) fam="akt";
+  else if(z===1) fam="ost";
+  else if(g===1) fam="alk"; else if(g===2) fam="zem";
+  else if(g>=3&&g<=12) fam="pre";
+  else if(g===15) fam="pni"; else if(g===16) fam="hlk"; else if(g===17) fam="hal"; else if(g===18) fam="zla";
+  else fam="ost";
+  let block;
+  if(lan||akt) block="f"; else if(g<=2 || z===2) block="s"; else if(g>=13) block="p"; else block="d";
+  EL.push({z:z, sym:SYM[z-1], name:NAME[z-1], ar:AR[z-1], g:g, per:per, kind:kind, fam:fam, block:block, lan:lan, akt:akt});
+}
+const KIND = {kov:["kovina","--c-kov"], nek:["nekovina","--c-nek"], pol:["polkovina","--c-pol"], unk:["umetni element, lastnosti slabo znane","--c-unk"]};
+const FAM = {alk:["alkalijske kovine","--c-alk"], zem:["zemeljskoalkalijske kovine","--c-zem"], pre:["prehodni elementi","--c-pre"], lan:["lantanoidi","--c-lan"], akt:["aktinoidi","--c-akt"], pni:["pniktogeni","--c-pni"], hlk:["halkogeni","--c-hlk"], hal:["halogeni","--c-hal"], zla:["žlahtni plini","--c-zla"], ost:["ostali elementi glavnih skupin","--c-ost"]};
+const BLOCK = {s:["s-področje","--c-s"], p:["p-področje","--c-p"], d:["d-področje","--c-d"], f:["f-področje","--c-f"]};
+
+/* elektronska konfiguracija po principu izgradnje */
+const ORDER = [["1s",2],["2s",2],["2p",6],["3s",2],["3p",6],["4s",2],["3d",10],["4p",6],["5s",2],["4d",10],["5p",6],["6s",2],["4f",14],["5d",10],["6p",6],["7s",2],["5f",14],["6d",10],["7p",6]];
+function config(z){
+  const out = []; let left = z;
+  for(let i=0; i<ORDER.length && left>0; i++){ const k = Math.min(left, ORDER[i][1]); out.push([ORDER[i][0], k, ORDER[i][1]]); left -= k; }
+  return out;
+}
+function cfgText(z){ return config(z).map(function(s){ return s[0]+s[1]; }).join(" "); }
+function cfgShort(z){
+  let core = 0; NOBLE.forEach(function(n){ if(n<z) core = n; });
+  if(!core) return cfgText(z);
+  const full = config(z), coreLen = config(core).length;
+  return "["+SYM[core-1]+"] " + full.slice(coreLen).map(function(s){ return s[0]+s[1]; }).join(" ");
+}
+function unpaired(z){
+  let u = 0; config(z).forEach(function(s){ const m = s[2]/2, k = s[1]; u += k<=m ? k : 2*m-k; }); return u;
+}
+/* tipični ioni */
+const TYPICAL = {1:[1,-1],3:[1],11:[1],19:[1],37:[1],55:[1],4:[2],12:[2],20:[2],38:[2],56:[2],13:[3],31:[3],7:[-3],15:[-3],8:[-2],16:[-2],34:[-2],9:[-1],17:[-1],35:[-1],53:[-1],26:[2,3],29:[1,2],30:[2],47:[1],28:[2],27:[2,3],25:[2],24:[3],50:[2,4],82:[2]};
+const ANION = {1:"hidridni",6:"karbidni",7:"nitridni",8:"oksidni",9:"fluoridni",15:"fosfidni",16:"sulfidni",17:"kloridni",34:"selenidni",35:"bromidni",53:"jodidni",33:"arzenidni"};
+const KATION_ADJ = {26:"železov",29:"bakrov",47:"srebrov",79:"zlatov",50:"kositrov",82:"svinčev",30:"cinkov",28:"nikljev"};
+const MULTI = [26,29,27,50];
+function romanN(n){ return ["","I","II","III","IV","V","VI","VII"][n] || String(n); }
+function ionName(z, c){
+  const e = EL[z-1];
+  if(c<0) return ANION[z] ? ANION[z]+" ion" : "anion";
+  let adj = KATION_ADJ[z];
+  if(!adj){ const n = e.name; adj = /[jcčšž]$/.test(n) ? n+"ev" : n.replace(/o$/,"")+"ov"; }
+  return adj + (MULTI.indexOf(z)>=0 ? "("+romanN(c)+")" : "") + " ion";
+}
+/* naravni izotopi (Z ≤ 36) */
+const ISO = {1:[1,2,3],2:[3,4],3:[6,7],4:[9],5:[10,11],6:[12,13,14],7:[14,15],8:[16,17,18],9:[19],10:[20,21,22],11:[23],12:[24,25,26],13:[27],14:[28,29,30],15:[31],16:[32,33,34,36],17:[35,37],18:[36,38,40],19:[39,40,41],20:[40,42,43,44,46,48],21:[45],22:[46,47,48,49,50],23:[50,51],24:[50,52,53,54],25:[55],26:[54,56,57,58],27:[59],28:[58,60,61,62,64],29:[63,65],30:[64,66,67,68,70],31:[69,71],32:[70,72,73,74,76],33:[75],34:[74,76,77,78,80,82],35:[79,81],36:[78,80,82,83,84,86]};
+const MAIN_ISO = {1:1,2:4,3:7,4:9,5:11,6:12,7:14,8:16,9:19,10:20,11:23,12:24,13:27,14:28,15:31,16:32,17:35,18:40,19:39,20:40,21:45,22:48,23:51,24:52,25:55,26:56,27:59,28:58,29:63,30:64,31:69,32:74,33:75,34:80,35:79,36:84};
+
+/* ===================== 12 GRADNIK ATOMA ===================== */
+const B = {p:6, n:6, e:6};
+const LIM = {p:36, n:50, e:40};
+const PARTS = [["p","protoni","var(--proton)"],["n","nevtroni","var(--neutron)"],["e","elektroni","var(--electron)"]];
+function buildCounters(){
+  const box = $("counters"); box.innerHTML = "";
+  PARTS.forEach(function(pt){
+    box.appendChild(el("span", {class:"dotk", style:"background:"+pt[2]}));
+    box.appendChild(el("span", {class:"lbl"}, pt[1]));
+    const m = el("button", {class:"pm", type:"button", "aria-label":"Odvzemi: "+pt[1]}, "−");
+    const v = el("span", {class:"val", id:"v-"+pt[0], "aria-live":"polite"}, "0");
+    const pl = el("button", {class:"pm", type:"button", "aria-label":"Dodaj: "+pt[1]}, "+");
+    m.addEventListener("click", function(){ if(B[pt[0]]>0){ B[pt[0]]--; drawAtom(); } });
+    pl.addEventListener("click", function(){ if(B[pt[0]]<LIM[pt[0]]){ B[pt[0]]++; drawAtom(); } });
+    box.appendChild(m); box.appendChild(v); box.appendChild(pl);
+  });
+}
+function drawAtom(){
+  PARTS.forEach(function(pt){ $("v-"+pt[0]).textContent = B[pt[0]]; });
+  const svg = $("atom-svg");
+  let s = "";
+  /* elektroni po lupinah iz konfiguracije (samo skica, ni v merilu) */
+  const shells = {};
+  if(B.e>0) config(B.e).forEach(function(sub){ const n = +sub[0][0]; shells[n] = (shells[n]||0) + sub[1]; });
+  const radii = {1:62,2:88,3:112,4:134,5:146};
+  const nucCount = B.p + B.n;
+  const nr = nucCount ? Math.max(9, 7*Math.sqrt(nucCount)*0.9) : 0;
+  Object.keys(radii).forEach(function(n){
+    if(!shells[n]) return;
+    const r = Math.max(radii[n], nr + 18 + (n-1)*22);
+    s += '<circle cx="150" cy="150" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4"/>';
+    for(let i=0;i<shells[n];i++){
+      const a = (i/shells[n])*Math.PI*2 - Math.PI/2 + n*0.3;
+      s += '<circle cx="'+(150+r*Math.cos(a)).toFixed(1)+'" cy="'+(150+r*Math.sin(a)).toFixed(1)+'" r="5" fill="var(--electron)"/>';
+    }
+  });
+  /* jedro: delci v spirali */
+  const parts = [];
+  for(let i=0;i<Math.max(B.p,B.n);i++){ if(i<B.p) parts.push("p"); if(i<B.n) parts.push("n"); }
+  parts.forEach(function(t, i){
+    const r = 5.2*Math.sqrt(i), a = i*2.4;
+    s += '<circle cx="'+(150+r*Math.cos(a)).toFixed(1)+'" cy="'+(150+r*Math.sin(a)).toFixed(1)+'" r="5.5" fill="'+(t==="p"?"var(--proton)":"var(--neutron)")+'" stroke="var(--surface)" stroke-width="1"/>';
+  });
+  if(!nucCount && !B.e) s += '<text x="150" y="155" text-anchor="middle" fill="var(--muted)" font-size="14">dodaj delce</text>';
+  s += '<text x="8" y="292" fill="var(--muted)" font-size="11">skica, ni v merilu</text>';
+  svg.innerHTML = s;
+
+  const kv = $("b-kv"), ex = $("b-explain");
+  const Z = B.p, A = B.p + B.n, ch = B.p - B.e;
+  if(Z===0){
+    $("b-sym").textContent = "—"; $("b-name").textContent = "ni elementa"; $("b-type").textContent = "Brez protonov ni elementa.";
+    kv.innerHTML = ""; ex.innerHTML = "Dodaj vsaj en <b>proton</b>. Število protonov določa element."; return;
+  }
+  const E = EL[Z-1];
+  $("b-sym").innerHTML = nuc(A, Z, E.sym, ch);
+  $("b-name").textContent = E.name;
+  let type = ch===0 ? "atom (nevtralen)" : ch>0 ? "kation: "+ionName(Z, ch) : "anion: "+ionName(Z, ch);
+  $("b-type").textContent = type;
+  kv.innerHTML = '<dt>vrstno število Z</dt><dd>'+Z+'</dd><dt>masno število A</dt><dd>'+A+'</dd><dt>naboj</dt><dd>'+(ch===0?"0":chargeStr(ch))+'</dd><dt>izotop</dt><dd>'+esc(E.name)+'-'+A+'</dd>';
+  const lines = [];
+  lines.push("<b>Z = p = "+Z+"</b> → to je <b>"+esc(E.name)+"</b>. A = p + n = "+B.p+" + "+B.n+" = <b>"+A+"</b>. Naboj = p − e = "+B.p+" − "+B.e+" = <b>"+(ch===0?"0":chargeStr(ch))+"</b>.");
+  if(ch>0) lines.push("Ker je elektronov <b>manj</b> kot protonov, je to <b>kation</b> (atom je oddal "+ch+" e<sup>−</sup>).");
+  if(ch<0) lines.push("Ker je elektronov <b>več</b> kot protonov, je to <b>anion</b> (atom je sprejel "+(-ch)+" e<sup>−</sup>).");
+  if(ch!==0 && NOBLE.indexOf(B.e)>=0) lines.push("Ima "+B.e+" elektronov, enako kot žlahtni plin <b>"+EL[B.e-1].name+"</b>. To je <b>stabilno</b>.");
+  if(ch!==0){
+    const t = TYPICAL[Z];
+    if(t && t.indexOf(ch)<0) lines.push("Tak ion je nenavaden. Tipičen ion: "+t.map(function(c){ return E.sym+"<sup>"+chargeStr(c)+"</sup>"; }).join(", ")+".");
+    if(!t) lines.push("Ta element običajno ne tvori takega iona.");
+  }
+  const iso = ISO[Z];
+  if(iso){
+    if(iso.indexOf(A)>=0) lines.push("Izotop <b>"+esc(E.name)+"-"+A+"</b> obstaja v naravi. Naravni izotopi: "+iso.map(function(a){ return E.sym+"-"+a; }).join(", ")+".");
+    else lines.push("Izotop "+esc(E.name)+"-"+A+" v naravi <b>ne obstaja</b> (ali hitro razpade). Spremeni nevtrone. Naravni izotopi: "+iso.map(function(a){ return E.sym+"-"+a; }).join(", ")+".");
+  }
+  ex.innerHTML = lines.map(function(l){ return "<p>"+l+"</p>"; }).join("");
+}
+let bTask = null;
+function newBuildTask(){
+  const zs = Object.keys(TYPICAL).map(Number).filter(function(z){ return z<=36; });
+  const kind = rnd(3);
+  let z, A, c;
+  if(kind===0){ z = 1+rnd(30); A = MAIN_ISO[z]; c = 0; }
+  else if(kind===1){ z = pick(zs); A = MAIN_ISO[z]; c = pick(TYPICAL[z]); }
+  else { z = pick([1,1,6,6,8,17,3,12,29,26]); const iso = ISO[z].filter(function(a){ return a!==MAIN_ISO[z]; }); A = pick(iso); c = 0; }
+  bTask = {p:z, n:A-z, e:z-c};
+  const E = EL[z-1];
+  let txt;
+  if(kind===0) txt = "Sestavi atom "+nuc(A, z, E.sym, 0)+" ("+esc(E.name)+").";
+  else if(kind===1) txt = "Sestavi "+(c>0?"kation":"anion")+" "+nuc(A, null, E.sym, c)+" ("+esc(ionName(z, c))+"). Vrstno število poišči v periodnem sistemu.";
+  else txt = "Sestavi izotop <b>"+esc(E.name)+"-"+A+"</b> (nevtralen atom).";
+  $("b-task").innerHTML = txt; $("b-fb").innerHTML = "";
+}
+$("b-newtask").addEventListener("click", newBuildTask);
+$("b-reset").addEventListener("click", function(){ B.p=0; B.n=0; B.e=0; drawAtom(); });
+$("b-check").addEventListener("click", function(){
+  const fb = $("b-fb");
+  if(!bTask){ fb.innerHTML = '<p class="fb info">Najprej klikni »Nov izziv«.</p>'; return; }
+  const errs = [];
+  if(B.p!==bTask.p) errs.push("protonov mora biti <b>"+bTask.p+"</b> (Z)");
+  if(B.n!==bTask.n) errs.push("nevtronov mora biti <b>"+bTask.n+"</b> (A − Z)");
+  if(B.e!==bTask.e) errs.push("elektronov mora biti <b>"+bTask.e+"</b> (p − naboj)");
+  fb.innerHTML = errs.length ? '<div class="fb no"><b>Še ne.</b> '+errs.join("; ")+'.</div>' : '<div class="fb ok"><b>Pravilno!</b> Klikni »Nov izziv« za naslednjega.</div>';
+});
+buildCounters(); drawAtom();
+
+/* ===================== 13 PERIODNI SISTEM ===================== */
+const pse = $("pse");
+let pseMode = "kind", pseSel = null, pseTask = null;
+const MODES = [["kind","Kovine / nekovine / polkovine"],["fam","Imena skupin"],["block","Področja s, p, d, f"],["per","Periode in skupine"]];
+MODES.forEach(function(m){
+  const b = el("button", {class:"btn small"+(m[0]===pseMode?" on":""), type:"button", "data-m":m[0]}, esc(m[1]));
+  b.addEventListener("click", function(){ pseMode = m[0]; document.querySelectorAll("#pse-modes .btn").forEach(function(x){ x.classList.toggle("on", x===b); }); colorPse(); });
+  $("pse-modes").appendChild(b);
+});
+const cells = {};
+for(let g=1; g<=18; g++){ const l = el("div", {class:"glab"}, String(g)); l.style.gridColumn = g; l.style.gridRow = 1; pse.appendChild(l); }
+EL.forEach(function(e){
+  const b = el("button", {class:"el", type:"button", "aria-label":e.name+", Z "+e.z}, '<small>'+e.z+'</small><b>'+e.sym+'</b>');
+  if(e.lan||e.akt){ b.style.gridColumn = 3 + (e.z - (e.lan?57:89)); b.style.gridRow = e.lan ? 10 : 11; }
+  else { b.style.gridColumn = e.g; b.style.gridRow = e.per + 1; }
+  b.addEventListener("click", function(){ clickEl(e); });
+  cells[e.z] = b; pse.appendChild(b);
+});
+[[6,"57–71"],[7,"89–103"]].forEach(function(r){ const ph = el("div", {class:"el ph"}, r[1]); ph.style.gridColumn = 3; ph.style.gridRow = r[0]+1; pse.appendChild(ph); });
+const gap = el("div"); gap.style.gridColumn = "1 / -1"; gap.style.gridRow = 9; gap.style.height = "8px"; pse.appendChild(gap);
+const PERC = ["--c-alk","--c-zem","--c-hal","--c-zla","--c-lan","--c-pni","--c-hlk"];
+function colorPse(){
+  const leg = $("pse-legend"); leg.innerHTML = "";
+  let map;
+  if(pseMode==="kind") map = KIND; else if(pseMode==="fam") map = FAM; else if(pseMode==="block") map = BLOCK;
+  EL.forEach(function(e){
+    let v;
+    if(pseMode==="per") v = "var("+PERC[e.per-1]+")";
+    else v = "var("+map[e[pseMode]][1]+")";
+    cells[e.z].style.background = v;
+  });
+  if(map) Object.keys(map).forEach(function(k){ leg.appendChild(el("span", null, '<i class="sw" style="background:var('+map[k][1]+')"></i>'+esc(map[k][0]))); });
+  else { for(let p=1;p<=7;p++) leg.appendChild(el("span", null, '<i class="sw" style="background:var('+PERC[p-1]+')"></i>'+p+'. perioda')); leg.appendChild(el("span", {class:"muted"}, "Periode = vrstice (1–7), skupine = stolpci (1–18).")); }
+}
+function groupText(e){
+  if(e.lan) return "lantanoidi (spodnja vrstica)";
+  if(e.akt) return "aktinoidi (spodnja vrstica)";
+  return e.g + ". skupina" + (ROMAN[e.g] ? " (" + ROMAN[e.g] + ")" : "");
+}
+function showInfo(e){
+  const t = TYPICAL[e.z];
+  const ions = t ? t.map(function(c){ return e.sym+"<sup>"+chargeStr(c)+"</sup> ("+esc(ionName(e.z,c))+")"; }).join(", ") : (e.fam==="zla" ? "ne tvori ionov" : "—");
+  let html = '<div class="tile" style="background:var('+KIND[e.kind][1]+')"><small>'+e.z+'</small><b>'+e.sym+'</b><small>'+esc(e.ar)+'</small></div>';
+  html += '<div style="display:grid;gap:6px"><h3>'+esc(e.name)+'</h3><dl class="kv">'+
+    '<dt>vrstno število</dt><dd>'+e.z+' (= '+e.z+' protonov)</dd>'+
+    '<dt>rel. atomska masa</dt><dd>'+esc(e.ar)+(e.ar[0]==="["?' <span class="muted">(radioaktiven, masa najstabilnejšega izotopa)</span>':'')+'</dd>'+
+    '<dt>perioda</dt><dd>'+e.per+'.</dd>'+
+    '<dt>skupina</dt><dd>'+groupText(e)+'</dd>'+
+    '<dt>vrsta</dt><dd>'+KIND[e.kind][0]+'</dd>'+
+    '<dt>družina</dt><dd>'+FAM[e.fam][0]+(e.fam==="pre"?" (3.–12. skupina)":"")+'</dd>'+
+    '<dt>področje</dt><dd>'+BLOCK[e.block][0]+'</dd>'+
+    '<dt>konfiguracija</dt><dd class="cfg" style="font-size:1rem">'+supify(cfgShort(e.z))+'</dd>'+
+    '<dt>tipičen ion</dt><dd>'+ions+'</dd></dl>';
+  if(e.z===24||e.z===29) html += '<p class="muted">Pri Cr in Cu je v resnici malo drugače. Tega ne obravnavamo.</p>';
+  if(e.z===1) html += '<p class="muted">Vodik je levo zgoraj, a je nekovina in ni alkalijska kovina.</p>';
+  if(e.z<=36) html += '<div class="btns"><button class="btn small" type="button" id="go-atom">Sestavi v gradniku</button><button class="btn small" type="button" id="go-orb">Poglej orbitale</button></div>';
+  html += '</div>';
+  $("el-info").innerHTML = html;
+  if(e.z<=36){
+    $("go-atom").addEventListener("click", function(){ B.p=e.z; B.e=e.z; B.n=MAIN_ISO[e.z]-e.z; drawAtom(); $("igra").scrollIntoView({behavior:"smooth"}); });
+    $("go-orb").addEventListener("click", function(){ setOrbMode("show"); setZ(e.z); $("orb-sec").scrollIntoView({behavior:"smooth"}); });
+  }
+}
+function clickEl(e){
+  if(pseSel) cells[pseSel].classList.remove("sel");
+  pseSel = e.z; cells[e.z].classList.add("sel");
+  showInfo(e);
+  if(pseTask){
+    const fb = $("pse-fb");
+    if(e.z===pseTask.z){ fb.innerHTML = '<div class="fb ok"><b>Pravilno!</b> '+esc(e.name)+' ('+e.sym+'), '+e.per+'. perioda, '+groupText(e)+'. '+esc(pseTask.why)+'</div>'; pseTask = null; }
+    else fb.innerHTML = '<div class="fb no"><b>Ne.</b> Kliknil si '+esc(e.name)+': '+e.per+'. perioda, '+groupText(e)+'. Poskusi znova.</div>';
+  }
+}
+function newPseTask(){
+  const t = rnd(5);
+  const mains = EL.filter(function(e){ return e.z<=56 && e.g && (e.g<=2 || e.g>=13); });
+  let e, txt, why = "";
+  if(t===0){ e = pick(mains); txt = "Najdi element v <b>"+e.per+". periodi</b> in <b>"+e.g+". skupini</b>."; }
+  else if(t===1){ e = EL[rnd(54)]; txt = "Najdi element z vrstnim številom <b>"+e.z+"</b>."; why = "Z = "+e.z+" pomeni "+e.z+" protonov."; }
+  else if(t===2){ e = pick(EL.slice(0,56)); txt = "Najdi element: <b>"+esc(e.name)+"</b>."; }
+  else if(t===3){
+    const opts = [[9,"Najdi halogen v 2. periodi."],[17,"Najdi halogen v 3. periodi."],[35,"Najdi halogen v 4. periodi."],[19,"Najdi alkalijsko kovino v 4. periodi."],[11,"Najdi alkalijsko kovino v 3. periodi."],[20,"Najdi zemeljskoalkalijsko kovino v 4. periodi."],[10,"Najdi žlahtni plin v 2. periodi."],[18,"Najdi žlahtni plin v 3. periodi."],[26,"Najdi prehodni element v 4. periodi in 8. skupini."],[14,"Najdi polkovino v 3. periodi."],[16,"Najdi halkogen v 3. periodi."],[50,"Element z Z = 50: v kateri periodi in skupini je? Klikni ga."]];
+    const o = pick(opts); e = EL[o[0]-1]; txt = o[1];
+  } else {
+    const opts = [[11,"Najdi element s konfiguracijo 1s² 2s² 2p⁶ 3s¹."],[8,"Najdi element s konfiguracijo 1s² 2s² 2p⁴."],[6,"Najdi element s konfiguracijo 1s² 2s² 2p²."],[17,"Najdi element s konfiguracijo [Ne] 3s² 3p⁵."],[31,"Najdi element s konfiguracijo [Ar] 4s² 3d¹⁰ 4p¹."],[12,"Najdi element s konfiguracijo [Ne] 3s²."]];
+    const o = pick(opts); e = EL[o[0]-1]; txt = o[1]; why = "Zadnji elektron je v "+config(e.z).slice(-1)[0][0]+".";
+  }
+  pseTask = {z:e.z, why:why};
+  $("pse-task").innerHTML = txt; $("pse-fb").innerHTML = "";
+}
+$("pse-newtask").addEventListener("click", newPseTask);
+$("pse-stoptask").addEventListener("click", function(){
+  if(pseTask){ const e = EL[pseTask.z-1]; $("pse-fb").innerHTML = '<div class="fb info">Rešitev: <b>'+esc(e.name)+' ('+e.sym+')</b>.</div>'; clickEl(e); }
+  pseTask = null; $("pse-task").textContent = "Izziv končan. Klikni »Nov izziv« za novega.";
+});
+colorPse(); clickEl(EL[5]);
+
+/* ===================== 14 ORBITALE ===================== */
+const SUBS = ORDER.slice(0, 8); /* 1s … 4p, dovolj za Z ≤ 36 */
+function fillState(z){
+  const st = {};
+  SUBS.forEach(function(s){ st[s[0]] = new Array(s[1]/2).fill(0); });
+  config(z).forEach(function(c){
+    const m = c[2]/2, k = c[1], arr = st[c[0]];
+    for(let i=0;i<m;i++) arr[i] = (k>i?1:0) + (k>m+i?1:0);
+  });
+  return st;
+}
+const BOXTXT = ["", "↑", "↑↓", "↑↑"];
+function drawDiagram(container, st, clickable, onClick, errs){
+  container.innerHTML = "";
+  SUBS.slice().reverse().forEach(function(s){
+    const name = s[0], type = name[1];
+    const row = el("div", {class:"orb-row"});
+    row.appendChild(el("span", {class:"on"}, name));
+    st[name].forEach(function(v, i){
+      const b = el("button", {class:"box "+(v?type:"")+(errs && errs[name+i]?" err":""), type:"button", "aria-label":name+" orbitala "+(i+1)+": "+(["prazna","en elektron","par","dva enaka spina"][v])}, BOXTXT[v]);
+      if(clickable) b.addEventListener("click", function(){ onClick(name, i); }); else b.disabled = true;
+      row.appendChild(b);
+    });
+    container.appendChild(row);
+  });
+}
+let orbZ = 8, playTimer = null;
+function setZ(z){ orbZ = Math.max(1, Math.min(36, z)); $("orb-range").value = orbZ; renderShow(); }
+function renderShow(){
+  const e = EL[orbZ-1];
+  $("orb-title").textContent = "Z = "+orbZ+": "+e.name+" ("+e.sym+"), "+orbZ+" elektronov";
+  drawDiagram($("orb-diagram"), fillState(orbZ), false);
+  $("orb-cfg").innerHTML = supify(cfgText(orbZ));
+  $("orb-short").innerHTML = "Krajši zapis: <b>"+supify(cfgShort(orbZ))+"</b> · samski elektroni: <b>"+unpaired(orbZ)+"</b>";
+  const c = config(orbZ), last = c[c.length-1], name = last[0], k = last[1], m = last[2]/2;
+  const lines = [];
+  if(k===1) lines.push("<b>Princip izgradnje:</b> prejšnja orbitala je polna, zato gre novi elektron v naslednjo po energiji: <b>"+name+"</b>.");
+  if(name==="4s" && k===1) lines.push("4s ima nižjo energijo kot 3d, zato se zapolni <b>prej</b>.");
+  if(name==="3d" && k===1) lines.push("Zdaj se polnijo 3d-orbitale (prehodni elementi). 4s je že polna.");
+  if(m>1 && k<=m) lines.push("<b>Hundovo pravilo:</b> v "+name+" gre vsak elektron najprej <b>sam</b> v svojo orbitalo ("+k+" od "+m+" orbital ima en elektron).");
+  if(m>1 && k>m) lines.push("Vse "+name+"-orbitale že imajo po en elektron. Zdaj nastajajo <b>pari</b>.");
+  if(k===2 && m===1 || k>m) lines.push("<b>Paulijevo načelo:</b> v orbitali sta največ 2 elektrona z nasprotnima spinoma ↑↓.");
+  if(NOBLE.indexOf(orbZ)>=0) lines.push("To je <b>žlahtni plin</b>: vse orbitale so polne. Zelo stabilno.");
+  $("orb-why").innerHTML = lines.map(function(l){ return "<p>"+l+"</p>"; }).join("");
+}
+$("orb-range").addEventListener("input", function(){ stopPlay(); setZ(+this.value); });
+$("orb-minus").addEventListener("click", function(){ stopPlay(); setZ(orbZ-1); });
+$("orb-plus").addEventListener("click", function(){ stopPlay(); setZ(orbZ+1); });
+function stopPlay(){ if(playTimer){ clearInterval(playTimer); playTimer = null; $("orb-play").textContent = "▶ Predvajaj od H"; } }
+$("orb-play").addEventListener("click", function(){
+  if(playTimer){ stopPlay(); return; }
+  const target = orbZ<=1 ? 36 : orbZ; setZ(1);
+  $("orb-play").textContent = "⏸ Ustavi";
+  playTimer = setInterval(function(){ if(orbZ>=target){ stopPlay(); return; } setZ(orbZ+1); }, 900);
+});
+function setOrbMode(m){
+  document.querySelectorAll("#orb-modes .btn").forEach(function(b){ b.classList.toggle("on", b.dataset.m===m); });
+  $("orb-show").hidden = m!=="show"; $("orb-self").hidden = m!=="self"; $("orb-write").hidden = m!=="write";
+  if(m!=="show") stopPlay();
+  if(m==="self" && !selfZ) newSelf();
+  if(m==="write" && !wZ) newWrite();
+}
+/* --- napiši zapis --- */
+const SUPMAP = {"⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9"};
+let wZ = 0;
+function normCfg(t){
+  t = String(t).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, function(c){ return SUPMAP[c]; }).toLowerCase().replace(/\^/g,"");
+  const m = t.match(/\d[spdf]\s*\d{1,2}/g) || [];
+  return m.map(function(x){ return x.replace(/\s+/g,""); });
+}
+function newWrite(){
+  let z; do { z = 2 + rnd(29); } while(z===wZ);
+  wZ = z; const e = EL[z-1];
+  $("w-title").textContent = e.name+" ("+e.sym+"), Z = "+z+": napiši konfiguracijo za "+z+" elektronov.";
+  $("w-in").value = ""; $("w-in").className = "cfg-in"; $("w-preview").textContent = "—"; $("w-fb").innerHTML = "";
+}
+$("w-in").addEventListener("input", function(){ const a = normCfg(this.value); $("w-preview").innerHTML = a.length ? supify(a.join(" ")) : "—"; });
+$("w-in").addEventListener("keydown", function(ev){ if(ev.key==="Enter"){ ev.preventDefault(); $("w-check").click(); } });
+$("w-new").addEventListener("click", newWrite);
+$("w-solve").addEventListener("click", function(){
+  $("w-fb").innerHTML = '<div class="fb info">Rešitev: <span class="cfg">'+supify(cfgText(wZ))+'</span><br>Tipkaš: <span class="eg" style="font-family:var(--display);font-weight:600">'+cfgText(wZ)+'</span></div>';
+});
+$("w-check").addEventListener("click", function(){
+  const got = normCfg($("w-in").value), want = config(wZ).map(function(c){ return c[0]+c[1]; });
+  if(!got.length){ $("w-fb").innerHTML = '<div class="fb info">Vpiši nekaj, npr. <b>1s2 2s2</b>.</div>'; return; }
+  if(got.join(" ")===want.join(" ")){
+    $("w-in").className = "cfg-in ok";
+    $("w-fb").innerHTML = '<div class="fb ok"><b>Pravilno!</b> <span class="cfg">'+supify(want.join(" "))+'</span></div>'; return;
+  }
+  $("w-in").className = "cfg-in bad";
+  const tips = []; let sum = 0;
+  got.forEach(function(g){ sum += parseInt(g.slice(2),10); });
+  if(sum!==wZ) tips.push("Seštej številke elektronov: imaš <b>"+sum+"</b>, potrebuješ <b>"+wZ+"</b>.");
+  const MAX = {s:2,p:6,d:10,f:14};
+  got.forEach(function(g){ const n = parseInt(g.slice(2),10); if(n>MAX[g[1]]) tips.push("<b>"+g.slice(0,2)+"</b> ima lahko največ <b>"+MAX[g[1]]+"</b> elektronov, ti si napisal "+n+"."); });
+  for(let i=0;i<Math.min(got.length,want.length);i++){
+    if(got[i].slice(0,2)!==want[i].slice(0,2)){ tips.push("Vrstni red: na "+(i+1)+". mestu mora biti <b>"+want[i].slice(0,2)+"</b>, ne "+got[i].slice(0,2)+". Pazi: 4s pride pred 3d."); break; }
+    if(got[i]!==want[i] && i<want.length-1){ tips.push("<b>"+want[i].slice(0,2)+"</b> mora biti polna, preden greš naprej."); break; }
+  }
+  if(!tips.length) tips.push("Skoraj. Preveri zadnjo orbitalo.");
+  $("w-fb").innerHTML = '<div class="fb no">'+tips.map(function(t){ return "<p>"+t+"</p>"; }).join("")+'</div>';
+});
+document.querySelectorAll("#orb-modes .btn").forEach(function(b){ b.addEventListener("click", function(){ setOrbMode(b.dataset.m); }); });
+setZ(8);
+
+/* napolni sam */
+let selfZ = 0, selfSt = null, selfErr = null;
+function emptySt(){ const st = {}; SUBS.forEach(function(s){ st[s[0]] = new Array(s[1]/2).fill(0); }); return st; }
+function newSelf(){
+  let z; do { z = 3 + rnd(28); } while(z===selfZ);
+  selfZ = z; selfSt = emptySt(); selfErr = null; $("self-fb").innerHTML = ""; renderSelf();
+}
+function selfCount(){ let n = 0; Object.keys(selfSt).forEach(function(k){ selfSt[k].forEach(function(v){ n += v===0?0:v===1?1:2; }); }); return n; }
+function renderSelf(){
+  const e = EL[selfZ-1];
+  $("self-title").textContent = e.name+" ("+e.sym+"), Z = "+selfZ+": razporedi "+selfZ+" elektronov.";
+  drawDiagram($("self-diagram"), selfSt, true, function(name, i){ selfSt[name][i] = (selfSt[name][i]+1)%4; selfErr = null; renderSelf(); }, selfErr);
+  $("self-count").textContent = "Postavljeno: "+selfCount()+" / "+selfZ+" elektronov.";
+}
+$("self-new").addEventListener("click", newSelf);
+$("self-clear").addEventListener("click", function(){ selfSt = emptySt(); selfErr = null; $("self-fb").innerHTML = ""; renderSelf(); });
+twoStep($("self-solve"), "Res? Klikni še enkrat", function(){
+  selfSt = fillState(selfZ); selfErr = null; renderSelf();
+  $("self-fb").innerHTML = '<div class="fb info">Rešitev: <span class="cfg">'+supify(cfgText(selfZ))+'</span></div>';
+});
+$("self-check").addEventListener("click", function(){
+  const errs = [], mark = {};
+  const n = selfCount();
+  if(n!==selfZ) errs.push("Število elektronov: postavil si <b>"+n+"</b>, potrebuješ <b>"+selfZ+"</b>.");
+  let pauli = false, hund = [], aufbau = null, sawGap = null;
+  SUBS.forEach(function(s){
+    const name = s[0], arr = selfSt[name];
+    arr.forEach(function(v, i){ if(v===3){ pauli = true; mark[name+i] = 1; } });
+    const full = arr.every(function(v){ return v===2; });
+    const any = arr.some(function(v){ return v>0; });
+    if(any && sawGap && !aufbau){ aufbau = [sawGap, name]; arr.forEach(function(v,i){ if(v) mark[name+i]=1; }); }
+    if(!full && !sawGap) sawGap = name;
+    if(arr.length>1 && arr.some(function(v){ return v===2; }) && arr.some(function(v){ return v===0; })){ hund.push(name); arr.forEach(function(v,i){ if(v===2) mark[name+i]=1; }); }
+  });
+  if(pauli) errs.push("<b>Paulijevo načelo:</b> v isti orbitali morata elektrona imeti <b>nasprotna</b> spina (↑↓, ne ↑↑).");
+  if(aufbau) errs.push("<b>Princip izgradnje:</b> elektron si dal v <b>"+aufbau[1]+"</b>, čeprav <b>"+aufbau[0]+"</b> še ni polna. Najprej zapolni orbitale z nižjo energijo.");
+  if(hund.length) errs.push("<b>Hundovo pravilo:</b> v "+hund.join(", ")+" si naredil par, čeprav je še prazna orbitala. Najprej daj v vsako po en elektron.");
+  selfErr = mark; renderSelf();
+  $("self-fb").innerHTML = errs.length ? '<div class="fb no">'+errs.map(function(x){ return "<p>"+x+"</p>"; }).join("")+'</div>'
+    : '<div class="fb ok"><b>Odlično, vse pravilno!</b> <span class="cfg">'+supify(cfgText(selfZ))+'</span> · samski elektroni: '+unpaired(selfZ)+'</div>';
+});
+
+/* ===================== 8 IZOTOPI: PRIMERJAVA ===================== */
+const ISO_SETS = {
+  "vodik H":{sym:"H",z:1,list:[[1,"protij","več kot 99,98 %"],[2,"devterij","okoli 0,02 %"],[3,"tritij","samo sledovi, radioaktiven"]]},
+  "ogljik C":{sym:"C",z:6,list:[[12,"ogljik-12","okoli 99 %"],[13,"ogljik-13","okoli 1 %"],[14,"ogljik-14","sledovi, radioaktiven"]]},
+  "klor Cl":{sym:"Cl",z:17,list:[[35,"klor-35","75,78 %"],[37,"klor-37","24,22 %"]]},
+  "uran U":{sym:"U",z:92,list:[[235,"uran-235","0,72 %"],[238,"uran-238","99,27 %"]]}
+};
+function nucleusSvg(p, n){
+  const tot = p+n, cap = 40, show = Math.min(tot, cap);
+  const sp = Math.round(show*p/tot), parts = [];
+  for(let i=0;i<show;i++) parts.push(i<sp ? "p" : "n");
+  const sh = shuffle(parts);
+  let svg = '<svg viewBox="0 0 120 120" aria-hidden="true">';
+  sh.forEach(function(t, i){
+    const a = i*2.399, r = 6.5*Math.sqrt(i+0.5);
+    svg += '<circle cx="'+(60+r*Math.cos(a)).toFixed(1)+'" cy="'+(60+r*Math.sin(a)).toFixed(1)+'" r="6" fill="var(--'+(t==="p"?"proton":"neutron")+')"/>';
+  });
+  return svg + '</svg>';
+}
+function showIso(key){
+  const set = ISO_SETS[key];
+  document.querySelectorAll("#iso-pick .btn").forEach(function(b){ b.classList.toggle("on", b.dataset.k===key); });
+  $("iso-view").innerHTML = set.list.map(function(it){
+    const A = it[0], n = A - set.z;
+    return '<div class="iso-card">'+nucleusSvg(set.z, n)+'<div class="big">'+nuc(A, set.z, set.sym)+'</div><b>'+it[1]+'</b>'
+      +'<div>protoni: <b>'+set.z+'</b> · nevtroni: <b>'+n+'</b></div><div>A = '+set.z+' + '+n+' = <b>'+A+'</b></div><div class="muted">'+it[2]+'</div></div>';
+  }).join("");
+  $("iso-note").innerHTML = '<span class="dotk" style="background:var(--proton)"></span> proton &nbsp; <span class="dotk" style="background:var(--neutron)"></span> nevtron<br>'
+    + 'Poglej: <b>protonov je vedno '+set.z+'</b>, zato je vedno '+set.sym+'. Spreminja se samo število <b>nevtronov</b> in zato masa.'
+    + (set.z>20 ? '<br><span class="muted">Pri velikih jedrih je narisan samo del delcev.</span>' : '');
+}
+Object.keys(ISO_SETS).forEach(function(k, i){
+  const b = el("button", {class:"btn small", type:"button"}, k); b.dataset.k = k;
+  b.addEventListener("click", function(){ showIso(k); }); $("iso-pick").appendChild(b);
+});
+showIso("vodik H");
+
+/* ===================== 15 RELATIVNA ATOMSKA MASA ===================== */
+const AR_SET = {
+  Cu:["baker",[[63,62.9296,69.15],[65,64.9278,30.85]]],
+  Cl:["klor",[[35,34.96885,75.78],[37,36.96590,24.22]]],
+  B:["bor",[[10,10.0129,19.9],[11,11.0093,80.1]]],
+  Li:["litij",[[6,6.0151,7.59],[7,7.0160,92.41]]],
+  Mg:["magnezij",[[24,23.9850,78.99],[25,24.9858,10.00],[26,25.9826,11.01]]],
+  Si:["silicij",[[28,27.9769,92.23],[29,28.9765,4.68],[30,29.9738,3.09]]],
+  Ti:["titan",[[46,45.9526,8.25],[47,46.9518,7.44],[48,47.9479,73.72],[49,48.9479,5.41],[50,49.9448,5.18]]],
+  Fe:["železo",[[54,53.9396,5.85],[56,55.9349,91.75],[57,56.9354,2.12],[58,57.9333,0.28]]],
+  Br:["brom",[[79,78.9183,50.69],[81,80.9163,49.31]]],
+  Ag:["srebro",[[107,106.9051,51.84],[109,108.9048,48.16]]],
+  Ga:["galij",[[69,68.9256,60.11],[71,70.9247,39.89]]]
+};
+let arSym = "Cu", arIso = [];
+const arSel = $("ar-el");
+Object.keys(AR_SET).forEach(function(k){ arSel.appendChild(el("option", {value:k}, esc(AR_SET[k][0]+" ("+k+")"))); });
+arSel.appendChild(el("option", {value:"X"}, "lasten element X"));
+function loadAr(k){
+  arSym = k;
+  if(k==="X") arIso = [{A:20,m:19.9924,p:90},{A:22,m:21.9914,p:10}];
+  else arIso = AR_SET[k][1].map(function(r){ return {A:r[0], m:r[1], p:r[2]}; });
+  renderArRows(); updateAr();
+}
+function renderArRows(){
+  const box = $("ar-rows"); box.innerHTML = "";
+  const head = el("div", {class:"iso-row muted", style:"font-size:.85rem"}, "<span>izotop</span><span>A<sub>r</sub> izotopa</span><span>razširjenost (%)</span><span></span>");
+  box.appendChild(head);
+  arIso.forEach(function(r, i){
+    const row = el("div", {class:"iso-row"});
+    const a = el("input", {type:"number", value:r.A, min:1, "aria-label":"masno število izotopa "+(i+1)}); a.style.width = "5em";
+    const m = el("input", {type:"number", value:r.m, step:"any", "aria-label":"relativna atomska masa izotopa "+(i+1)});
+    const p = el("input", {type:"number", value:r.p, step:"any", min:0, max:100, "aria-label":"razširjenost izotopa "+(i+1)});
+    const del = el("button", {class:"btn small", type:"button", "aria-label":"odstrani izotop"}, "✕");
+    a.addEventListener("input", function(){ r.A = parseInt(a.value,10)||0; updateAr(); });
+    m.addEventListener("input", function(){ r.m = num(m.value)||0; updateAr(); });
+    p.addEventListener("input", function(){ r.p = num(p.value)||0; updateAr(); });
+    del.addEventListener("click", function(){ if(arIso.length>1){ arIso.splice(i,1); renderArRows(); updateAr(); } });
+    const lab = el("span", {style:"display:flex;gap:6px;align-items:center"}); lab.appendChild(el("span", null, arSym+"-")); lab.appendChild(a);
+    row.appendChild(lab); row.appendChild(m); row.appendChild(p); row.appendChild(del);
+    box.appendChild(row);
+  });
+}
+$("ar-add").addEventListener("click", function(){ const last = arIso[arIso.length-1]; arIso.push({A:last.A+1, m:last.m+1, p:0}); renderArRows(); updateAr(); });
+arSel.addEventListener("change", function(){ loadAr(arSel.value); });
+function arCalc(list){ return list.reduce(function(s, r){ return s + r.p/100*r.m; }, 0); }
+function stepsHtml(list, sym){
+  const parts = list.map(function(r){ return fmt(r.p/100, 4)+" · "+fmt(r.m, 4); });
+  const prods = list.map(function(r){ return fmt(r.p/100*r.m, 4); });
+  return "<p><b>1.</b> Odstotke deli s 100: "+list.map(function(r){ return fmt(r.p,2)+" % = "+fmt(r.p/100,4); }).join(", ")+"</p>"+
+    "<p><b>2.</b> A<sub>r</sub>("+esc(sym)+") = "+parts.join(" + ")+"</p>"+
+    "<p><b>3.</b> = "+prods.join(" + ")+"</p>"+
+    "<p><b>4.</b> = <b>"+fmt(arCalc(list), 2)+"</b></p>";
+}
+function updateAr(){
+  const sum = arIso.reduce(function(s,r){ return s + r.p; }, 0);
+  $("ar-sum").innerHTML = Math.abs(sum-100) < 0.015 ? "Vsota razširjenosti: 100 % ✔" : '<span class="badv">Vsota razširjenosti je '+fmt(sum,2)+' %. Mora biti 100 %.</span>';
+  const ar = arCalc(arIso);
+  $("ar-steps").innerHTML = stepsHtml(arIso, arSym) + (arSym!=="X" ? '<p class="muted">V periodnem sistemu: '+esc(EL[SYM.indexOf(arSym)].ar)+'</p>' : "");
+  drawArChart(arIso, ar);
+}
+function drawArChart(list, ar){
+  const W = 600, H = 250, L = 48, R = 16, T = 26, Bt = 44;
+  const As = list.map(function(r){ return r.A; });
+  const minA = Math.min.apply(null, As) - 1, maxA = Math.max.apply(null, As) + 1;
+  const span = Math.max(2, maxA - minA);
+  const x = function(a){ return L + (a - minA) / span * (W - L - R); };
+  const top = Math.max(10, Math.ceil(Math.max.apply(null, list.map(function(r){ return r.p; }))/10)*10);
+  const y = function(p){ return T + (1 - p/top) * (H - T - Bt); };
+  let s = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Razširjenost izotopov">';
+  for(let g=0; g<=top; g+= top>50?20:10){ s += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="var(--line)"/><text x="'+(L-6)+'" y="'+(y(g)+4)+'" text-anchor="end" font-size="12" fill="var(--muted)">'+g+' %</text>'; }
+  const bw = Math.min(46, (W-L-R)/span*0.6);
+  list.forEach(function(r){
+    const cx = x(r.A);
+    s += '<rect x="'+(cx-bw/2)+'" y="'+y(Math.max(0,r.p))+'" width="'+bw+'" height="'+(y(0)-y(Math.max(0,r.p)))+'" rx="4" fill="var(--accent)" opacity=".8"/>';
+    s += '<text x="'+cx+'" y="'+(y(Math.max(0,r.p))-6)+'" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">'+fmt(r.p,2)+' %</text>';
+    s += '<text x="'+cx+'" y="'+(H-Bt+18)+'" text-anchor="middle" font-size="13" fill="var(--ink)">'+r.A+'</text>';
+  });
+  if(isFinite(ar) && ar>minA && ar<maxA){
+    const ax = x(ar);
+    s += '<line x1="'+ax+'" x2="'+ax+'" y1="'+(T-6)+'" y2="'+y(0)+'" stroke="var(--bad)" stroke-width="2.5" stroke-dasharray="6 4"/>';
+    s += '<text x="'+ax+'" y="'+(T-10)+'" text-anchor="middle" font-size="13" font-weight="700" fill="var(--bad)">A_r = '+fmt(ar,2)+'</text>';
+  }
+  s += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(0)+'" y2="'+y(0)+'" stroke="var(--muted)"/>';
+  s += '<text x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="12" fill="var(--muted)">masno število izotopa · rdeča črta = relativna atomska masa (bližje izotopu, ki ga je več)</text>';
+  s += '</svg>';
+  $("ar-chart").innerHTML = s;
+}
+loadAr("Cu");
+
+/* vaja Ar */
+let arQ = null, arTried = false;
+function newArQ(){
+  let sym, list;
+  if(Math.random()<0.6){ sym = pick(Object.keys(AR_SET)); list = AR_SET[sym][1].map(function(r){ return {A:r[0], m:r[1], p:r[2]}; }); }
+  else {
+    sym = "X"; const A = 20 + rnd(150); const p1 = Math.round((20 + Math.random()*70)*100)/100;
+    list = [{A:A, m:Math.round((A - 0.01 - Math.random()*0.08)*10000)/10000, p:p1},{A:A+2, m:Math.round((A+2 - 0.01 - Math.random()*0.08)*10000)/10000, p:Math.round((100-p1)*100)/100}];
+  }
+  arQ = {sym:sym, list:list, ans:arCalc(list)}; arTried = false;
+  $("arq-solve").disabled = true; $("arq-in").value = ""; $("arq-in").className = ""; $("arq-fb").innerHTML = "";
+  let h = '<p>Izračunaj relativno atomsko maso elementa <b>'+(sym==="X"?"X (izmišljen)":esc(AR_SET[sym][0]))+'</b>. Rezultat zaokroži na 2 decimalki.</p><div class="tbl-wrap"><table><thead><tr><th>Izotop</th><th class="num">A<sub>r</sub> izotopa</th><th class="num">Razširjenost</th></tr></thead><tbody>';
+  list.forEach(function(r){ h += '<tr><td><sup>'+r.A+'</sup>'+esc(sym)+'</td><td class="num">'+fmt(r.m,4)+'</td><td class="num">'+fmt(r.p,2)+' %</td></tr>'; });
+  $("arq-box").innerHTML = h + '</tbody></table></div>';
+}
+$("arq-new").addEventListener("click", newArQ);
+$("arq-check").addEventListener("click", function(){
+  const v = num($("arq-in").value);
+  if(isNaN(v)){ $("arq-fb").innerHTML = '<div class="fb info">Vpiši število, npr. 63,55.</div>'; return; }
+  arTried = true; $("arq-solve").disabled = false;
+  const ok = Math.abs(v - arQ.ans) <= 0.02;
+  $("arq-in").className = ok ? "ok" : "bad";
+  $("arq-fb").innerHTML = ok ? '<div class="fb ok"><b>Pravilno!</b> A<sub>r</sub> = '+fmt(arQ.ans,2)+'.</div>'
+    : '<div class="fb no"><b>Še ne.</b> Namig: odstotke najprej deli s 100, potem vsak delež pomnoži z maso izotopa in seštej.'+(Math.abs(v - arQ.ans*100) < 3 ? ' Videti je, da nisi delil s 100.' : '')+'</div>';
+});
+twoStep($("arq-solve"), "Res? Klikni še enkrat", function(){ $("arq-fb").innerHTML = '<div class="fb info steps">'+stepsHtml(arQ.list, arQ.sym)+'</div>'; });
+newArQ();
+
+/* LD50 */
+function ld(){
+  const l = num($("ld-val").value), m = num($("ld-mass").value);
+  if(isNaN(l)||isNaN(m)){ $("ld-out").textContent = "Vpiši obe števili."; return; }
+  const d = l*m;
+  $("ld-out").innerHTML = "Odmerek = LD<sub>50</sub> · masa = "+fmt(l,2)+" mg/kg · "+fmt(m,2)+" kg = <b>"+fmt(d, d<10?2:1)+" mg</b>. Manjša LD<sub>50</sub> pomeni bolj strupeno snov.";
+}
+$("ld-val").addEventListener("input", ld); $("ld-mass").addEventListener("input", ld); ld();
+
+/* ===================== 16 GHS ===================== */
+const DIA = '<polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#d01c1c" stroke-width="6" stroke-linejoin="round"/>';
+const GHS = [
+  {id:"01", name:"Eksplozivno", cat:"fizikalna nevarnost", mean:"Snov lahko eksplodira. Zelo nestabilna, razpade ob udarcu, trenju ali toploti.", ex:"pirotehnika, nekateri peroksidi",
+   svg:'<circle cx="46" cy="58" r="11" fill="#111"/><path d="M53 49 l8 -8" stroke="#111" stroke-width="3"/><g stroke="#111" stroke-width="3" stroke-linecap="round"><path d="M64 34 l6 -6"/><path d="M68 44 l9 -2"/><path d="M60 28 l1 -9"/><path d="M28 40 l-7 -5"/><path d="M26 58 l-9 0"/></g><rect x="62" y="56" width="6" height="6" fill="#111" transform="rotate(20 65 59)"/><rect x="30" y="72" width="5" height="5" fill="#111"/>'},
+  {id:"02", name:"Vnetljivo", cat:"fizikalna nevarnost", mean:"Snov se zlahka vname (tekočine, plini, trdne snovi).", ex:"etanol, aceton, bencin",
+   svg:'<path d="M50 24 C40 38 34 46 36 58 C38 68 46 72 50 72 C58 72 66 66 64 54 C63 46 56 42 58 32 C52 38 52 44 50 46 C48 40 50 32 50 24Z" fill="#111"/><rect x="32" y="74" width="36" height="4" fill="#111"/>'},
+  {id:"03", name:"Oksidativno", cat:"fizikalna nevarnost", mean:"Snov povzroči ali pospeši gorenje drugih snovi (oddaja kisik).", ex:"vodikov peroksid (koncentriran), kalijev nitrat",
+   svg:'<circle cx="50" cy="64" r="11" fill="none" stroke="#111" stroke-width="5"/><path d="M50 22 C42 32 40 38 42 46 C44 52 56 52 58 46 C60 38 54 34 55 26 C51 30 51 34 50 36 C48 32 50 28 50 22Z" fill="#111"/><rect x="32" y="78" width="36" height="4" fill="#111"/>'},
+  {id:"04", name:"Plini pod tlakom", cat:"fizikalna nevarnost", mean:"Stisnjen, utekočinjen ali ohlajen plin. Jeklenka lahko ob segrevanju poči.", ex:"jeklenka s kisikom, propan-butan",
+   svg:'<rect x="24" y="44" width="46" height="18" rx="9" fill="#111"/><rect x="70" y="49" width="8" height="8" fill="#111"/>'},
+  {id:"05", name:"Jedko", cat:"fizikalna nevarnost in nevarno za zdravje", mean:"Raztaplja kovine in povzroča hude opekline kože ter poškodbe oči.", ex:"klorovodikova kislina, natrijev hidroksid",
+   svg:'<g fill="#111"><rect x="24" y="24" width="8" height="18" transform="rotate(-30 28 33)"/><rect x="58" y="24" width="8" height="18" transform="rotate(30 62 33)"/><circle cx="32" cy="50" r="2.5"/><circle cx="34" cy="57" r="2.5"/><circle cx="62" cy="50" r="2.5"/><circle cx="60" cy="57" r="2.5"/><path d="M22 66 h18 v6 h-4 v-3 h-14z"/><path d="M50 64 h26 v8 h-26z M54 64 l4 -3 4 3z"/></g>'},
+  {id:"06", name:"Akutna strupenost", cat:"nevarno za zdravje", mean:"Zelo strupeno. Že majhna količina lahko povzroči smrt (zaužitje, koža, vdihavanje).", ex:"metanol, kalijev cianid",
+   svg:'<circle cx="50" cy="42" r="14" fill="#111"/><rect x="43" y="52" width="14" height="8" fill="#111"/><circle cx="44" cy="41" r="4" fill="#fff"/><circle cx="56" cy="41" r="4" fill="#fff"/><g stroke="#111" stroke-width="5" stroke-linecap="round"><path d="M30 62 L70 76"/><path d="M70 62 L30 76"/></g>'},
+  {id:"07", name:"Klicaj (akutna nevarnost)", cat:"nevarno za zdravje", mean:"Manj nevarno: draži kožo in oči, lahko povzroči alergijo, je škodljivo.", ex:"etanol (draženje oči), nekatera čistila",
+   svg:'<rect x="45" y="24" width="10" height="34" rx="3" fill="#111"/><circle cx="50" cy="69" r="6" fill="#111"/>'},
+  {id:"08", name:"Nevarno za zdravje", cat:"nevarno za zdravje", mean:"Mutageno, rakotvorno ali strupeno za razmnoževanje. Lahko poškoduje organe ob dolgotrajni izpostavljenosti.", ex:"benzen, azbest",
+   svg:'<circle cx="50" cy="30" r="9" fill="#111"/><path d="M30 76 C30 50 38 42 50 42 C62 42 70 50 70 76Z" fill="#111"/><path d="M50 50 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1z" fill="#fff"/>'},
+  {id:"09", name:"Nevarno za vodno okolje", cat:"nevarno za okolje", mean:"Škoduje vodnim organizmom (ribam, rastlinam) in okolju.", ex:"nekateri pesticidi, bakrov sulfat",
+   svg:'<rect x="30" y="34" width="4" height="30" fill="#111"/><path d="M32 22 L22 40 L42 40Z" fill="#111"/><path d="M42 66 h34" stroke="#111" stroke-width="3"/><ellipse cx="58" cy="58" rx="12" ry="5" fill="#111"/><path d="M70 58 l8 -5 v10z" fill="#111"/><g stroke="#fff" stroke-width="1.5"><path d="M50 56 l3 3 M53 56 l-3 3"/></g>'}
+];
+const ghsGrid = $("ghs-grid");
+let ghsTask = null;
+GHS.forEach(function(g){
+  const b = el("button", {class:"pick", type:"button", "aria-label":"GHS"+g.id+" "+g.name}, '<svg viewBox="0 0 100 100" aria-hidden="true">'+DIA+g.svg+'</svg>'+esc(g.name));
+  b.addEventListener("click", function(){
+    ghsGrid.querySelectorAll(".pick").forEach(function(x){ x.classList.remove("sel","right","wrongpick"); });
+    b.classList.add("sel");
+    $("ghs-info").innerHTML = '<p><b>GHS'+g.id+': '+esc(g.name)+'</b> <span class="tag">'+esc(g.cat)+'</span></p><p>'+esc(g.mean)+'</p><p class="muted">Primeri: '+esc(g.ex)+'</p>';
+    if(ghsTask){
+      if(g===ghsTask){ b.classList.add("right"); $("ghs-fb").innerHTML = '<div class="fb ok"><b>Pravilno!</b> To je '+esc(g.name)+'.</div>'; ghsTask = null; }
+      else { b.classList.add("wrongpick"); $("ghs-fb").innerHTML = '<div class="fb no"><b>Ne.</b> To je '+esc(g.name)+'. Poskusi znova.</div>'; }
+    }
+  });
+  g.btn = b; ghsGrid.appendChild(b);
+});
+const GHS_Q = [
+  ["Snov se zlahka vname. Hraniti stran od plamena.", 1],["Snov lahko eksplodira ob udarcu.", 0],["Snov pomaga drugim snovem goreti.", 2],
+  ["V jeklenki je stisnjen plin.", 3],["Kislina, ki naredi opekline na koži.", 4],["Že majhna količina je smrtno strupena.", 5],
+  ["Snov draži oči in kožo.", 6],["Snov je rakotvorna.", 7],["Snov ubija ribe v reki.", 8],["Snov raztaplja kovine.", 4],["Snov lahko škoduje plodu (strupena za razmnoževanje).", 7]
+];
+$("ghs-new").addEventListener("click", function(){
+  const q = pick(GHS_Q); ghsTask = GHS[q[1]];
+  ghsGrid.querySelectorAll(".pick").forEach(function(x){ x.classList.remove("sel","right","wrongpick"); });
+  $("ghs-task").innerHTML = "Kateri piktogram bi bil na embalaži? <b>"+esc(q[0])+"</b>"; $("ghs-fb").innerHTML = "";
+});
+
+/* ===================== 17 PRIPOMOČKI ===================== */
+const LAB = [
+  {n:"epruveta", use:"Za preproste poskuse z majhnimi količinami snovi. Lahko jo segrevamo v plamenu.", tip:"Pri segrevanju ustje obrni stran od ljudi. Drži jo z leseno ščipalko.", task:"Narediti moraš preprost poskus z malo snovi.", svg:'<path class="liq" d="M27 36 H37 V50 a5 5 0 0 1 -10 0Z"/><path d="M24 6 H40 M27 6 V50 a5 5 0 0 0 10 0 V6"/>'},
+  {n:"čaša", use:"Za pripravo raztopin in preproste poskuse.", tip:"Oznake na čaši so samo približne: prostornine ne izmeriš natančno.", task:"Pripraviti moraš raztopino, prostornina je lahko približna.", svg:'<path class="liq" d="M18 34 H46 V54 H18Z"/><path d="M14 10 L18 14 V56 H46 V12 M22 24 H28 M22 34 H28 M22 44 H28"/>'},
+  {n:"erlenmajerica", use:"Konična posoda z ožjim vratom. Za segrevanje raztopin, reakcije, titracijo.", tip:"Imenuje se po nemškem kemiku Emilu Erlenmeyerju.", task:"Potrebuješ konično posodo z ozkim vratom, da se raztopina pri mešanju ne razlije.", svg:'<path class="liq" d="M21 40 H43 L52 56 H12Z"/><path d="M27 6 V24 L12 56 H52 L37 24 V6"/>'},
+  {n:"buča", use:"Okroglo ali ravno dno, dolg ali kratek vrat. Za reakcije in sestavljanje aparatur.", tip:"Merilna buča ima oznako za natančno prostornino.", task:"Sestavljaš aparaturo za destilacijo in rabiš posodo z okroglim dnom.", svg:'<circle cx="32" cy="42" r="16"/><path d="M28 6 V27 M36 6 V27"/>'},
+  {n:"merilna buča", use:"Za pripravo raztopin z natančno določeno koncentracijo.", tip:"Na vratu ima tanko črto: do nje napolniš.", task:"Pripraviti moraš raztopino z natančno koncentracijo.", svg:'<path class="liq" d="M20 48 H44 C47 52 47 58 44 58 H20 C17 58 17 52 20 48Z"/><path d="M28 4 V34 C12 38 12 58 20 58 H44 C52 58 52 38 36 34 V4 M26 16 H38"/>'},
+  {n:"merilni valj", use:"Za odmerjanje prostornine tekočin.", tip:"Je manj natančen kot pipeta, a bolj kot čaša.", task:"Odmeriti moraš 50 mL vode, ne rabi biti zelo natančno.", svg:'<path class="liq" d="M25 30 H39 V54 H25Z"/><path d="M25 6 V54 H39 V6 M16 58 H48 M28 16 H33 M28 26 H33 M28 36 H33 M28 46 H33"/>'},
+  {n:"pipeta", use:"Za natančno odmerjanje prostornine tekočin. Polnilna ima eno oznako, merilna ima lestvico.", tip:"Nikoli ne pipetiraj z usti. Uporabi nastavek (žogico) za pipetiranje.", task:"Odmeriti moraš točno 20 mL tekočine.", svg:'<path d="M32 2 V20 M32 40 V62 M28 10 H36"/><ellipse cx="32" cy="30" rx="6" ry="10"/>'},
+  {n:"bireta", use:"Za titriranje. Spodaj ima ventil (petelin), s katerim spuščaš tekočino.", tip:"Pritrdimo jo v stojalo s prižemo in mufo.", task:"Izvajaš titracijo in počasi dodajaš tekočino.", svg:'<path class="liq" d="M28 14 H36 V44 H28Z"/><path d="M28 2 V44 M36 2 V44 M28 44 L32 48 L36 44 M24 50 H40 M32 50 V60 M36 12 H40 M36 22 H40 M36 32 H40"/>'},
+  {n:"kapalka", use:"Za dodajanje majhnih količin tekočine po kapljicah. Imenujemo jo tudi Pasteurjeva pipeta.", tip:"Ime po Louisu Pasteurju (1822–1895).", task:"Raztopini moraš dodati 3 kapljice indikatorja.", svg:'<ellipse class="fillk" cx="32" cy="12" rx="7" ry="9"/><path d="M29 20 L30 54 L32 60 L34 54 L35 20"/>'},
+  {n:"lij", use:"Za prelivanje tekočin. S filtrirnim papirjem za filtracijo.", tip:"Nagubani filtrirni papir pospeši filtracijo.", task:"Iz zmesi peska in vode moraš ločiti pesek (filtracija).", svg:'<path d="M10 10 H54 L36 30 V58 M28 58 V30 L10 10"/>'},
+  {n:"lij ločnik", use:"Za ločevanje tekočin, ki se ne mešajo (npr. olje in voda). Tudi za ekstrakcijo.", tip:"Najprej skozi pipo odteče gostejša (spodnja) plast.", task:"Ločiti moraš olje od vode.", svg:'<path class="liq" d="M18 30 H46 C46 38 40 42 32 44 C24 42 18 38 18 30Z"/><path d="M28 4 V10 C10 20 12 38 30 46 V58 M34 58 V46 C52 38 54 20 36 10 V4 M24 50 H40"/>'},
+  {n:"Büchnerjev lij", use:"Za filtriranje pod znižanim tlakom (hitreje). Imenujemo ga tudi nuča.", tip:"Postavimo ga na presesalno erlenmajerico, ki je povezana z vodno črpalko.", task:"Filtrirati moraš hitro, s pomočjo vodne črpalke.", svg:'<path d="M12 10 H52 V26 L36 36 V58 M28 58 V36 L12 26 V10 M16 20 H48"/>'},
+  {n:"terilnica s pestilom", use:"Za trenje (drobljenje) trdnih snovi v prah.", tip:"Narejena je iz porcelana ali ahata.", task:"Kristale moraš zdrobiti v fin prah.", svg:'<path d="M8 32 Q32 64 56 32 Z"/><path d="M44 6 L32 34" stroke-width="5"/>'},
+  {n:"izparilnica", use:"Za izparevanje tekočin, npr. da dobiš sol iz raztopine.", tip:"Dodaj vrelne kamenčke, da tekočina ne brizga.", task:"Iz slane vode moraš dobiti sol.", svg:'<path class="liq" d="M14 34 Q32 46 50 34Z"/><path d="M6 26 Q32 56 58 26"/>'},
+  {n:"eksikator", use:"Steklena posoda z brušenim pokrovom. Ščiti snovi pred vlago in jih suši.", tip:"Spodaj je sušilno sredstvo, npr. CaCl₂ ali silikagel.", task:"Snov moraš zaščititi pred vlago iz zraka.", svg:'<path d="M10 22 Q32 4 54 22 Z M28 10 V6 H36 V10 M12 24 V50 Q32 58 52 50 V24 M12 38 H52"/>'},
+  {n:"puhalka", use:"Za dodajanje malo tekočine (npr. destilirane vode) in spiranje pripomočkov.", tip:"Mora biti jasno označena z vsebino.", task:"Steno čaše moraš sprati z destilirano vodo.", svg:'<path class="liq" d="M21 40 H43 V56 H21Z"/><path d="M20 28 V56 H44 V28 Q32 18 20 28 M32 22 V10 L52 6"/>'},
+  {n:"hladilnik", use:"Kondenzira hlape v tekočino. Ključni del aparature za destilacijo.", tip:"Hlapi gredo skozi notranjo cev, po zunanji teče hladilna voda. Najbolj preprost je Liebigov.", task:"Pri destilaciji moraš hlape spremeniti nazaj v tekočino.", svg:'<path d="M24 8 V56 M40 8 V56 M32 2 V62 M40 14 H48 M24 50 H16"/>'},
+  {n:"plinski gorilnik", use:"Za segrevanje. Imenujemo ga tudi Bunsenov gorilnik. Plamen doseže do 1200 °C.", tip:"Prižiganje: zrak zaprt, odpri plin, prižgi. Ugašanje: zapri zrak, nato plin.", task:"Snov moraš segreti na zelo visoko temperaturo s plamenom.", svg:'<path class="fillk" d="M32 20 C26 12 30 6 32 2 C34 6 38 12 32 20Z"/><path d="M18 58 H46 M28 58 V22 M36 58 V22 M28 50 H14"/>'},
+  {n:"tehtnica", use:"Za merjenje mase. Analitska je najbolj natančna in ima zaščitno komoro.", tip:"Kuhinjska tehtnica je za laboratorij premalo natančna.", task:"Natančno moraš izmeriti maso 0,25 g snovi.", svg:'<path d="M8 40 H56 V56 H8Z M14 34 H50 M32 34 V40 M22 46 H42 V51 H22Z"/>'},
+  {n:"areometer", use:"Za merjenje gostote tekočin.", tip:"Plava v tekočini. Globlje kot se potopi, manjša je gostota.", task:"Izmeriti moraš gostoto tekočine.", svg:'<path d="M32 4 V30 M29 12 H35 M29 20 H35"/><ellipse cx="32" cy="42" rx="6" ry="12"/><circle class="fillk" cx="32" cy="50" r="3"/>'},
+  {n:"spatula", use:"Za zajemanje trdnih snovi.", tip:"Lahko je kovinska ali plastična. Podobno rabi žlička.", task:"Iz reagenčne steklenice moraš vzeti malo trdne snovi.", svg:'<path d="M10 56 L44 22"/><ellipse cx="49" cy="15" rx="7" ry="4" transform="rotate(-45 49 15)"/>'},
+  {n:"žarilni lonček", use:"Za segrevanje (žarjenje) trdnih snovi na zelo visoki temperaturi.", tip:"Pri segrevanju ga postavimo v žarilni trikotnik.", task:"Trdno snov moraš žariti v plamenu.", svg:'<path d="M18 22 L22 52 H42 L46 22 Z M16 18 H48"/>'},
+  {n:"digestorij", use:"Zaprt delovni prostor z ventilacijo za delo s strupenimi ali smrdečimi hlapi.", tip:"Strupeni plini se odsesajo ven.", task:"Delati moraš s koncentrirano klorovodikovo kislino, ki hlapi.", svg:'<path d="M8 8 H56 V58 H8Z M8 30 H56 M24 20 V12 M20 16 L24 12 L28 16 M40 20 V12 M36 16 L40 12 L44 16"/>'},
+  {n:"stojalo, mufa in prižema", use:"Za pritrjevanje pripomočkov (npr. birete) v aparaturi.", tip:"Mufa pritrdi prižemo na stojalo.", task:"Bireto moraš pritrditi, da stoji navpično.", svg:'<path d="M10 58 H40 M18 58 V4 M18 20 H42 M42 15 V25 M15 17 H21 V23 H15Z"/>'}
+];
+const labGrid = $("lab-grid");
+let labTask = null;
+LAB.forEach(function(t){
+  const b = el("button", {class:"pick", type:"button"}, '<svg viewBox="0 0 64 64" aria-hidden="true">'+t.svg+'</svg>'+esc(t.n));
+  b.addEventListener("click", function(){
+    labGrid.querySelectorAll(".pick").forEach(function(x){ x.classList.remove("sel","right","wrongpick"); });
+    b.classList.add("sel");
+    $("lab-info").innerHTML = '<p><b>'+esc(t.n)+'</b></p><p>'+esc(t.use)+'</p><p class="muted">'+esc(t.tip)+'</p>';
+    if(labTask){
+      if(t===labTask){ b.classList.add("right"); $("lab-fb").innerHTML = '<div class="fb ok"><b>Pravilno!</b> Rabiš: '+esc(t.n)+'.</div>'; labTask = null; }
+      else { b.classList.add("wrongpick"); $("lab-fb").innerHTML = '<div class="fb no"><b>Ne.</b> '+esc(t.n)+': '+esc(t.use)+' Poskusi znova.</div>'; }
+    }
+  });
+  labGrid.appendChild(b);
+});
+$("lab-new").addEventListener("click", function(){
+  let t; do { t = pick(LAB); } while(t===labTask);
+  labTask = t;
+  labGrid.querySelectorAll(".pick").forEach(function(x){ x.classList.remove("sel","right","wrongpick"); });
+  $("lab-task").innerHTML = "<b>"+esc(t.task)+"</b> Kateri pripomoček potrebuješ?"; $("lab-fb").innerHTML = "";
+});
+
+/* ===================== 18 KVIZ ===================== */
+const GROUPS = {
+  "Laboratorij":["Kemija in eksperiment","Pripomočki in varnost"],
+  "Nevarne snovi":["GHS in stavki","Toksikologija"],
+  "Atom":["Delci v atomu","Z, A in izotopi","Relativna atomska masa"],
+  "Ioni in PSE":["Ioni","Periodni sistem"],
+  "Elektronska ovojnica":["Orbitale in pravila","Konfiguracije"]
+};
+function Q(t,q,o,a,e){ return {t:t,q:q,o:o,a:a,e:e}; }
+const QUIZ = [
+  Q("Kemija in eksperiment","Kaj je kemija?",["naravoslovna veda, ki proučuje snovi, njihove lastnosti in spremembe","veda o živih bitjih","veda o gibanju teles"],0,"Kemija proučuje snovi, lastnosti in spremembe."),
+  Q("Kemija in eksperiment","Snov je …",["vse, kar ima maso in zavzame prostor","samo to, kar vidimo","samo tekočine in plini"],0,"Tudi zrak je snov, ker ima maso in zavzame prostor."),
+  Q("Kemija in eksperiment","Eksperiment (poskus) je …",["znanstveni postopek, s katerim kaj ugotovimo ali dokažemo","ugibanje rezultata","zapis v zvezek"],0,"Več eksperimentov skupaj je raziskava."),
+  Q("Kemija in eksperiment","Veličina, ki med poskusom spreminja vrednost, je …",["konstanta","spremenljivka","katalizator"],1,"Spremenljivka se spreminja, konstanta ostane enaka."),
+  Q("Kemija in eksperiment","Kaj se pri kemijski reakciji NE spremeni?",["masa snovi","barva","oblika"],0,"Zakon o ohranitvi mase (Lavoisier)."),
+  Q("Kemija in eksperiment","Kdo je odkril zakon o ohranitvi mase?",["Lavoisier","Erlenmeyer","Bunsen"],0,"Antoine Laurent Lavoisier (1743–1794)."),
+  Q("Kemija in eksperiment","Avogadrova konstanta je približno …",["6,02 · 10²³ mol⁻¹","8,31 kPa L mol⁻¹ K⁻¹","1,67 · 10⁻²⁴ g"],0,"8,31 je splošna plinska konstanta R."),
+  Q("Kemija in eksperiment","Fritz Pregl, rojen v Ljubljani, je Nobelovo nagrado za kemijo dobil leta …",["1923","1908","1911"],0,"Leta 1923."),
+  Q("Kemija in eksperiment","1 mL je enako …",["1 cm³","1 dm³","1 m³"],0,"1 mL = 1 cm³, 1 L = 1 dm³."),
+  Q("Kemija in eksperiment","Koliko mL je 1 L?",["100","1000","10"],1,"1 L = 1000 mL."),
+  Q("Kemija in eksperiment","Raziskava, pri kateri sodeluje več ved, je …",["interdisciplinarna","eksperimentalna","konstantna"],0,"Inter = med, disciplina = veda."),
+
+  Q("Pripomočki in varnost","V čem drobimo (tremo) trdne snovi?",["v terilnici s pestilom","v izparilnici","v eksikatorju"],0,"Terilnica je iz porcelana ali ahata."),
+  Q("Pripomočki in varnost","Kateri pripomoček uporabljamo za titriranje?",["bireto","merilni valj","lij ločnik"],0,"Bireta ima spodaj ventil za počasno spuščanje tekočine."),
+  Q("Pripomočki in varnost","S katerim pripomočkom najbolj natančno odmeriš 20 mL?",["s čašo","s pipeto","z erlenmajerico"],1,"Pipeta je najbolj natančna. Čaša in erlenmajerica merita samo približno."),
+  Q("Pripomočki in varnost","Zakaj s čašo ne merimo natančne prostornine?",["ker so oznake samo približne","ker je iz plastike","ker je premajhna"],0,"Za natančno merjenje rabiš pipeto, bireto ali merilno bučo."),
+  Q("Pripomočki in varnost","Za pripravo raztopine z natančno koncentracijo uporabimo …",["merilno bučo","čašo","izparilnico"],0,"Merilna buča ima na vratu oznako za natančno prostornino."),
+  Q("Pripomočki in varnost","Kateri pripomoček ima ime po nemškem kemiku?",["erlenmajerica","čaša","epruveta"],0,"Emil Erlenmeyer (1825–1909)."),
+  Q("Pripomočki in varnost","Z lijem ločnikom ločimo …",["tekočine, ki se ne mešajo","trdne snovi od tekočin","pline"],0,"Npr. olje in vodo."),
+  Q("Pripomočki in varnost","Katera plast pri liju ločniku odteče najprej?",["gostejša (spodnja)","redkejša (zgornja)","obe hkrati"],0,"Pipa je spodaj, zato najprej odteče spodnja, gostejša plast."),
+  Q("Pripomočki in varnost","Čemu služi eksikator?",["za zaščito snovi pred vlago in sušenje","za segrevanje","za merjenje gostote"],0,"Spodaj ima sušilno sredstvo (CaCl₂, silikagel)."),
+  Q("Pripomočki in varnost","Zakaj v izparilnico damo vrelne kamenčke?",["da tekočina ne brizga","da hitreje izhlapi","za lepši videz"],0,"Vrelni kamenčki omogočajo enakomerno vrenje."),
+  Q("Pripomočki in varnost","Hladilnik (kondenzator) je ključni del aparature za …",["destilacijo","titracijo","tehtanje"],0,"Hlape spremeni nazaj v tekočino."),
+  Q("Pripomočki in varnost","Kaj teče po zunanji cevi hladilnika?",["hladilna voda","hlapi","zrak"],0,"Hlapi so v notranji cevi, voda jih hladi od zunaj."),
+  Q("Pripomočki in varnost","Büchnerjev lij (nuča) uporabljamo za …",["filtriranje pod znižanim tlakom","ločevanje olja in vode","segrevanje"],0,"Z vodno črpalko je filtracija hitrejša."),
+  Q("Pripomočki in varnost","Kako ugasnemo plinski gorilnik?",["najprej zapremo zrak, nato plin","najprej plin, nato zrak","pihnemo v plamen"],0,"Najprej zrak, nato plin."),
+  Q("Pripomočki in varnost","Pri prižiganju plinskega gorilnika mora biti dovod zraka …",["zaprt","odprt do konca","ni pomembno"],0,"Zrak je zaprt, odpreš plin in prižgeš. Šele nato uravnaš plamen."),
+  Q("Pripomočki in varnost","Plinski gorilnik imenujemo tudi …",["Bunsenov gorilnik","Liebigov gorilnik","Pasteurjev gorilnik"],0,"Po Robertu Bunsenu."),
+  Q("Pripomočki in varnost","Kakšna je slabost špiritnega gorilnika?",["nižja temperatura plamena","je predrag","ne gori"],0,"Gori na etanol. Je preprost, a ima nižjo temperaturo."),
+  Q("Pripomočki in varnost","Analitska tehtnica je v primerjavi s precizno …",["bolj natančna in ima zaščitno komoro","manj natančna","enaka"],0,"Komora prepreči vpliv prepiha."),
+  Q("Pripomočki in varnost","Gostoto tekočine izmerimo z …",["areometrom","bireto","termometrom"],0,"Areometer plava v tekočini."),
+  Q("Pripomočki in varnost","Kje delamo s strupenimi hlapi?",["v digestoriju","v eksikatorju","v kristalizirki"],0,"Digestorij ima ventilacijo."),
+  Q("Pripomočki in varnost","Ustje epruvete med segrevanjem obrnemo …",["stran od ljudi","proti sebi","proti sošolcu"],0,"Vroča tekočina lahko brizgne."),
+  Q("Pripomočki in varnost","Kapalko imenujemo tudi …",["Pasteurjeva pipeta","bireta","nuča"],0,"Po Louisu Pasteurju."),
+  Q("Pripomočki in varnost","Najdi vsiljivca! Kaj NE uporabljamo za segrevanje?",["plinski gorilnik","grelna plošča","žarilni lonček","puhalka"],3,"Puhalka je za dodajanje vode in spiranje."),
+
+  Q("GHS in stavki","Kaj pomeni kratica GHS?",["Globally Harmonized System","General Health Safety","Green Hazard Sign"],0,"Mednarodni sistem za označevanje nevarnih snovi."),
+  Q("GHS in stavki","Koliko GHS piktogramov poznamo?",["9","5","12"],0,"Devet piktogramov."),
+  Q("GHS in stavki","Kakšne oblike je GHS piktogram?",["kvadrat na ogljišču z rdečim robom","moder krog","rumen trikotnik"],0,"Črn znak na beli podlagi, rdeč rob."),
+  Q("GHS in stavki","V koliko kategorij delimo nevarne lastnosti?",["3: fizikalne, zdravje, okolje","2","5"],0,"Fizikalne nevarnosti, nevarno za zdravje, nevarno za okolje."),
+  Q("GHS in stavki","Piktogram z lobanjo pomeni …",["akutna strupenost","vnetljivo","plini pod tlakom"],0,"Že majhna količina je lahko smrtna."),
+  Q("GHS in stavki","Piktogram s klicajem pomeni …",["blažjo nevarnost, npr. draženje","eksplozivno","jedko"],0,"Draži kožo, oči, je škodljivo."),
+  Q("GHS in stavki","Silhueta človeka z zvezdo na prsih pomeni …",["rakotvorno, mutageno, strupeno za razmnoževanje","jedko za kožo","oksidativno"],0,"Nevarno za zdravje ob dolgotrajni izpostavljenosti."),
+  Q("GHS in stavki","Mrtva riba in drevo pomenita …",["nevarno za vodno okolje","strupeno za ljudi","vnetljivo"],0,"To je edini piktogram za okolje."),
+  Q("GHS in stavki","Plamen nad krogom pomeni …",["oksidativno","vnetljivo","eksplozivno"],0,"Samo plamen = vnetljivo. Plamen nad krogom = oksidativno."),
+  Q("GHS in stavki","H-stavki opisujejo …",["nevarnost snovi","previdnostne ukrepe","ceno snovi"],0,"H = hazard (nevarnost)."),
+  Q("GHS in stavki","P-stavki so …",["previdnostni stavki","stavki o nevarnosti","stavki o sestavi"],0,"P = precaution (previdnost)."),
+  Q("GHS in stavki","»H225 Lahko vnetljiva tekočina in hlapi« je …",["H-stavek","P-stavek"],0,"Opisuje nevarnost."),
+  Q("GHS in stavki","»P102 Hraniti zunaj dosega otrok« je …",["P-stavek","H-stavek"],0,"Pove, kaj moraš narediti."),
+  Q("GHS in stavki","Varnostni list je …",["dokument z lastnostmi, nevarnostmi in navodili za varno uporabo snovi","račun","seznam pripomočkov"],0,"Običajno ga izda proizvajalec."),
+  Q("GHS in stavki","Najdi vsiljivca! Kaj NI fizikalna nevarnost?",["eksplozivno","vnetljivo","plini pod tlakom","akutna strupenost"],3,"Akutna strupenost je nevarnost za zdravje."),
+
+  Q("Toksikologija","Toksikologija je …",["veda o strupenih snoveh in njihovem učinkovanju","veda o rastlinah","veda o atomih"],0,"Toksikon = strup."),
+  Q("Toksikologija","Kdo je rekel »Samo odmerek loči zdravilo od strupa«?",["Paracelsus","Lavoisier","Demokrit"],0,"Paracelsus (1493–1541), oče toksikologije."),
+  Q("Toksikologija","V kateri enoti izražamo odmerek?",["mg/kg telesne mase","°C","mL"],0,"Odmerek je odvisen od mase telesa."),
+  Q("Toksikologija","Ksenobiotik je snov, ki …",["je v organizmu, a je organizem sam ne naredi","jo organizem sam naredi","je samo v rastlinah"],0,"Npr. zdravila, aditivi, pesticidi."),
+  Q("Toksikologija","Vnos z vdihavanjem je …",["respiratorni","oralni","dermalni"],0,"Oralni = usta, dermalni = koža."),
+  Q("Toksikologija","Vnos skozi kožo je …",["dermalni","oralni","respiratorni"],0,"Npr. kreme in mazila."),
+  Q("Toksikologija","Akutna izpostavitev pomeni …",["kratek čas, večja količina","dolgo časa, majhne količine"],0,"Kronična je dolgotrajna."),
+  Q("Toksikologija","LD₅₀ je odmerek, pri katerem …",["umre 50 % testiranih živali","ni nobenega učinka","se pojavi prvi učinek"],0,"Srednja smrtna doza."),
+  Q("Toksikologija","Snov A ima LD₅₀ = 10 mg/kg, snov B pa 500 mg/kg. Katera je bolj strupena?",["A","B","enako"],0,"Manjša LD₅₀ = bolj strupena: že malo snovi je smrtno."),
+  Q("Toksikologija","NOAEL je …",["največji odmerek brez opaznega škodljivega učinka","najmanjši odmerek z učinkom","smrtni odmerek"],0,"NO = ni opaznega učinka."),
+  Q("Toksikologija","Kateri vrstni red je pravilen?",["NOAEL < LOAEL < LD₅₀","LD₅₀ < NOAEL < LOAEL","LOAEL < NOAEL < LD₅₀"],0,"Benzen: 100 < 200 < 930 mg/kg."),
+  Q("Toksikologija","LD₅₀ = 16 mg/kg. Kolikšen je ta odmerek za podgano z maso 0,20 kg?",["3,2 mg","80 mg","16 mg"],0,"16 mg/kg · 0,20 kg = 3,2 mg."),
+  Q("Toksikologija","Na kaj se osredotoča zelena kemija?",["na vpliv kemije na okolje","na barve snovi","na rastline"],0,"Ima 12 načel."),
+  Q("Toksikologija","Koliko načel ima zelena kemija?",["12","5","9"],0,"Eno od njih: bolje je preprečiti odpadke kot jih čistiti."),
+
+  Q("Delci v atomu","Atom je …",["najmanjši delec s kemijskimi lastnostmi določenega elementa","najmanjši delec sploh","molekula"],0,"Atom lahko razbijemo na manjše delce, a ti nimajo več lastnosti elementa."),
+  Q("Delci v atomu","Kaj je v atomskem jedru?",["protoni in nevtroni","elektroni","protoni in elektroni"],0,"Elektroni so v elektronski ovojnici."),
+  Q("Delci v atomu","Kakšen naboj ima elektron?",["−1","+1","0"],0,"Proton +1, nevtron 0."),
+  Q("Delci v atomu","Zakaj je atom električno nevtralen?",["ker ima enako protonov in elektronov","ker nima nabojev","ker ima več nevtronov"],0,"+ in − se izničita."),
+  Q("Delci v atomu","Kateri delec je najlažji?",["elektron","proton","nevtron"],0,"Elektron je skoraj 2000-krat lažji od protona."),
+  Q("Delci v atomu","Kje je skoraj vsa masa atoma?",["v jedru (več kot 99,9 %)","v ovojnici","enakomerno povsod"],0,"Protoni in nevtroni so težki in so v jedru."),
+  Q("Delci v atomu","Nukleoni so …",["protoni in nevtroni","protoni in elektroni","samo elektroni"],0,"Delci v jedru."),
+  Q("Delci v atomu","Kdo je mislil, da je snov iz nedeljivih delcev (atomos)?",["Demokrit","Rutherford","Bohr"],0,"Grški filozof Demokrit."),
+  Q("Delci v atomu","Kdo je leta 1911 objavil model atoma z jedrom?",["Rutherford","Demokrit","Lavoisier"],0,"Ernest Rutherford."),
+  Q("Delci v atomu","Jedro je od atoma manjše približno …",["100 000-krat","10-krat","2-krat"],0,"Atom je večinoma prazen prostor."),
+
+  Q("Z, A in izotopi","Vrstno število Z je …",["število protonov","število nevtronov","protoni + nevtroni"],0,"Z določa element."),
+  Q("Z, A in izotopi","Masno število A je …",["protoni + nevtroni","samo protoni","elektroni + protoni"],0,"Število nukleonov."),
+  Q("Z, A in izotopi","Kako izračunamo število nevtronov?",["A − Z","A + Z","Z − A"],0,"Masno minus vrstno število."),
+  Q("Z, A in izotopi","Kje zapišemo masno število?",["levo zgoraj ob simbolu","levo spodaj","desno spodaj"],0,"Z je levo spodaj."),
+  Q("Z, A in izotopi","Koliko nevtronov ima ²⁷₁₃Al?",["14","13","27"],0,"27 − 13 = 14."),
+  Q("Z, A in izotopi","Atom ima 26 protonov in 28 nevtronov. Kaj je to?",["železo, A = 54","nikelj, A = 28","kobalt, A = 26"],0,"Z = 26 je železo. A = 26 + 28 = 54."),
+  Q("Z, A in izotopi","Ali je masno število zapisano v periodnem sistemu?",["ne","da"],0,"V PSE je relativna atomska masa, ne masno število."),
+  Q("Z, A in izotopi","Kaj določa, kateri element je atom?",["število protonov","število nevtronov","število elektronov"],0,"Ioni imajo drugačno število elektronov, a so še vedno isti element."),
+  Q("Z, A in izotopi","Izotopi so …",["atomi istega elementa z različnim številom nevtronov","atomi različnih elementov z istim A","ioni"],0,"Razlikujejo se v masnem številu."),
+  Q("Z, A in izotopi","V čem se izotopi razlikujejo?",["v fizikalnih lastnostih in razširjenosti","v kemijskih lastnostih","v številu protonov"],0,"Kemijske lastnosti so enake."),
+  Q("Z, A in izotopi","Devterij ima v jedru …",["1 proton in 1 nevtron","samo 1 proton","1 proton in 2 nevtrona"],0,"Protij nima nevtrona, tritij ima 2."),
+  Q("Z, A in izotopi","Kateri vodikov izotop je radioaktiven?",["tritij","protij","devterij"],0,"Tritij je v naravi samo v sledovih."),
+  Q("Z, A in izotopi","Težka voda ima formulo …",["D₂O","H₂O₂","HO"],0,"Namesto navadnega vodika ima devterij. Vre pri 101,4 °C."),
+  Q("Z, A in izotopi","Kateri element ima samo en naravni izotop?",["fluor","klor","železo"],0,"Npr. Be, F, Na, Al, P."),
+  Q("Z, A in izotopi","Kateri uranov izotop rabimo v jedrskih elektrarnah?",["²³⁵U","²³⁸U","²³⁴U"],0,"V naravi ga je le 0,72 %, zato uran obogatijo."),
+  Q("Z, A in izotopi","Kdo je raziskoval radioaktivnost in dobil dve Nobelovi nagradi?",["Marie Curie","Paracelsus","Mendelejev"],0,"Marie Curie Skłodowska."),
+
+  Q("Relativna atomska masa","A_r pove, kolikokrat je masa atoma večja od …",["1/12 mase atoma ¹²C","mase protona","1 grama"],0,"Primerjamo z dvanajstino mase ogljika-12."),
+  Q("Relativna atomska masa","Kakšno enoto ima relativna atomska masa?",["nima enote","g","kg"],0,"Je relativna, torej samo število."),
+  Q("Relativna atomska masa","A_r(Cl) = 35,45. Katerega izotopa je več?",["³⁵Cl","³⁷Cl","enako"],0,"A_r je bližje 35, zato je več ³⁵Cl."),
+  Q("Relativna atomska masa","Masno število Al je 27, A_r pa 26,98. Zakaj?",["A je vedno celo število, A_r ni","napaka v učbeniku","A_r je vedno večja"],0,"A_r je izmerjena masa, A samo šteje delce."),
+  Q("Relativna atomska masa","Kako izračunamo A_r elementa z več izotopi?",["seštejemo zmnožke deležev in mas izotopov","povprečje masnih števil","A − Z"],0,"A_r = delež₁ · A_r₁ + delež₂ · A_r₂ + …"),
+  Q("Relativna atomska masa","69,15 % zapišemo kot delež …",["0,6915","69,15","6,915"],0,"Odstotek deli s 100."),
+  Q("Relativna atomska masa","A_r bakra je …",["63,55","64","63"],0,"0,6915 · 62,9296 + 0,3085 · 64,9278 = 63,55."),
+  Q("Relativna atomska masa","Element ima izotopa z A_r 10 (20 %) in 11 (80 %). Koliko je A_r?",["10,8","10,5","10,2"],0,"0,2 · 10 + 0,8 · 11 = 2 + 8,8 = 10,8."),
+
+  Q("Ioni","Ioni so …",["delci z električnim nabojem","nevtralni delci","samo pozitivni delci"],0,"Od atoma se razlikujejo v številu elektronov."),
+  Q("Ioni","Kation nastane, ko atom …",["odda elektrone","sprejme elektrone","odda protone"],0,"Ostane več protonov kot elektronov, zato je pozitiven."),
+  Q("Ioni","Anion je …",["negativen ion","pozitiven ion","nevtralen atom"],0,"Atom je sprejel elektrone."),
+  Q("Ioni","Kakšen naboj imajo ioni elementov 2. skupine?",["2+","1+","2−"],0,"Oddajo 2 elektrona: Mg²⁺, Ca²⁺."),
+  Q("Ioni","Kakšen naboj imajo ioni halogenov (17. skupina)?",["1−","1+","2−"],0,"Sprejmejo 1 elektron: Cl⁻, Br⁻."),
+  Q("Ioni","Kako se imenuje ion Cl⁻?",["kloridni ion","klorov ion","klorni ion"],0,"Anioni: latinska osnova + -idni."),
+  Q("Ioni","Kako se imenuje ion O²⁻?",["oksidni ion","kisikov ion","oksigenski ion"],0,"Kisik → oksidni ion."),
+  Q("Ioni","Kako se imenuje ion K⁺?",["kalijev ion","kalidni ion","kalijski ion"],0,"Kationi: slovensko ime + -ev/-ov ion."),
+  Q("Ioni","Ion Fe³⁺ se imenuje …",["železov(III) ion","železidni ion","železov ion 3"],0,"Prehodni elementi imajo več nabojev, zato rimska številka."),
+  Q("Ioni","Koliko elektronov ima ion Al³⁺ (Z = 13)?",["10","13","16"],0,"13 − 3 = 10."),
+  Q("Ioni","Koliko elektronov ima ion S²⁻ (Z = 16)?",["18","14","16"],0,"16 + 2 = 18. Enako kot argon."),
+  Q("Ioni","Zakaj so ioni Na⁺, Mg²⁺, Cl⁻ stabilni?",["imajo razporeditev elektronov kot žlahtni plin","nimajo elektronov","imajo več nevtronov"],0,"Polna zunanja lupina je stabilna."),
+  Q("Ioni","Kateri elementi običajno NE tvorijo ionov?",["žlahtni plini","halogeni","alkalijske kovine"],0,"Že imajo stabilno razporeditev elektronov."),
+  Q("Ioni","Nastanek kationa iz atoma je …",["endotermen proces","eksotermen proces"],0,"Za odstranitev elektrona moramo dovesti energijo."),
+  Q("Ioni","Kje ob simbolu zapišemo naboj iona?",["desno zgoraj","levo zgoraj","desno spodaj"],0,"Najprej številka, nato znak: Ca²⁺."),
+  Q("Ioni","Koliko protonov ima ion NH₄⁺?",["11","10","7"],0,"N ima 7, 4 · H po 1: 7 + 4 = 11. Elektronov je 10."),
+  Q("Ioni","Koliko elektronov ima ion PO₄³⁻?",["50","47","44"],0,"Protonov: 15 + 4 · 8 = 47. Naboj 3− pomeni 3 elektrone več: 50."),
+
+  Q("Periodni sistem","Element je …",["čista snov, ki je s kemijsko reakcijo ne moremo razstaviti","zmes snovi","vsaka spojina"],0,"Iz elementa ne dobiš enostavnejše snovi."),
+  Q("Periodni sistem","Po čem so razvrščeni elementi v PSE?",["po naraščajočem vrstnem številu","po abecedi","po barvi"],0,"In po ponavljajočih se kemijskih lastnostih."),
+  Q("Periodni sistem","Kdo je leta 1869 sestavil periodni sistem?",["Mendelejev","Berzelius","Bunsen"],0,"Dmitrij Ivanovič Mendelejev."),
+  Q("Periodni sistem","Kdo je uvedel simbole z eno ali dvema črkama?",["Berzelius","Mendelejev","Moseley"],0,"Jöns Jakob Berzelius, 1813."),
+  Q("Periodni sistem","Koliko period ima PSE?",["7","18","8"],0,"Periode so vodoravne vrstice."),
+  Q("Periodni sistem","Koliko skupin ima PSE?",["18","7","10"],0,"Skupine so navpični stolpci."),
+  Q("Periodni sistem","Prehodni elementi so v skupinah …",["3.–12.","1. in 2.","13.–18."],0,"Glavne skupine so 1., 2. in 13.–18."),
+  Q("Periodni sistem","Kje so kovine v PSE?",["levo","desno","samo zgoraj"],0,"Nekovine so desno, polkovine vmes."),
+  Q("Periodni sistem","Kateri element je nekovina, čeprav je levo zgoraj?",["vodik","litij","helij"],0,"Vodik ni alkalijska kovina."),
+  Q("Periodni sistem","Alkalijske kovine so v …",["1. skupini","2. skupini","17. skupini"],0,"Zelo reaktivne kovine (Li, Na, K …)."),
+  Q("Periodni sistem","Halogeni so v …",["17. skupini","16. skupini","18. skupini"],0,"F, Cl, Br, I."),
+  Q("Periodni sistem","Kateri halogen je najbolj reaktiven?",["fluor","jod","brom"],0,"Reaktivnost pada navzdol po skupini."),
+  Q("Periodni sistem","Žlahtni plini so v …",["18. skupini","1. skupini","17. skupini"],0,"Skoraj ne reagirajo."),
+  Q("Periodni sistem","Kateri žlahtni plin tvori največ spojin?",["ksenon","helij","neon"],0,"Helij in neon spojin nimata."),
+  Q("Periodni sistem","Kositer (Z = 50) je v …",["5. periodi, 14. skupini","4. periodi, 15. skupini","5. periodi, 4. skupini"],0,"Je element glavne skupine (IV)."),
+  Q("Periodni sistem","Lantanoidi so elementi z vrstnim številom …",["57–71","89–103","21–30"],0,"Aktinoidi so 89–103."),
+  Q("Periodni sistem","Katera kovina je pri sobni temperaturi tekoča?",["živo srebro","natrij","zlato"],0,"Tali se pri −39 °C."),
+  Q("Periodni sistem","Najdi vsiljivca! Kaj NI lastnost kovin?",["kovinski lesk","dobro prevajajo tok","dobro prevajajo toploto","so vse plini"],3,"Kovine so (razen Hg) trdne."),
+
+  Q("Orbitale in pravila","Atomska orbitala je prostor, kjer je elektron z verjetnostjo …",["95 %","50 %","100 %"],0,"Natančne poti elektrona ne poznamo."),
+  Q("Orbitale in pravila","Kakšne oblike je s-orbitala?",["kroglasta","pentlja","kocka"],0,"p-orbitale imajo obliko pentlje."),
+  Q("Orbitale in pravila","Koliko p-orbital je na enem nivoju?",["3","1","5"],0,"pₓ, p_y, p_z."),
+  Q("Orbitale in pravila","Koliko elektronov gre največ v vse p-orbitale enega nivoja?",["6","3","2"],0,"3 orbitale · 2 elektrona."),
+  Q("Orbitale in pravila","Koliko elektronov gre največ v d-orbitale?",["10","6","5"],0,"5 orbital · 2 elektrona."),
+  Q("Orbitale in pravila","Paulijevo načelo pravi, da sta v eni orbitali …",["največ 2 elektrona z nasprotnima spinoma","največ 3 elektroni","vedno 2 elektrona z enakim spinom"],0,"↑↓ je prav, ↑↑ ni."),
+  Q("Orbitale in pravila","Hundovo pravilo pravi, da …",["elektroni najprej zasedejo enakovredne orbitale posamično","se elektroni vedno združijo v pare","gre elektron v orbitalo z najvišjo energijo"],0,"Npr. p³: ↑ ↑ ↑."),
+  Q("Orbitale in pravila","Princip izgradnje pravi, da elektroni najprej zasedejo orbitale …",["z nižjo energijo","z višjo energijo","naključno"],0,"1s, 2s, 2p, 3s …"),
+  Q("Orbitale in pravila","Katera orbitala se zapolni prej?",["4s","3d"],0,"4s ima nižjo energijo kot 3d."),
+  Q("Orbitale in pravila","Kateri zapis za p³ je pravilen?",["[↑][↑][↑]","[↑↓][↑][ ]","[↑↑][↑][ ]"],0,"Hundovo pravilo: najprej po en elektron v vsako."),
+  Q("Orbitale in pravila","Katera orbitala je večja?",["3s","2s","1s"],0,"Večja številka = večja orbitala."),
+  Q("Orbitale in pravila","Elektronska konfiguracija je …",["razporeditev elektronov po orbitalah","število protonov","masa atoma"],0,"Npr. 1s² 2s¹."),
+
+  Q("Konfiguracije","Konfiguracija kisika (Z = 8) je …",["1s² 2s² 2p⁴","1s² 2s² 2p⁶","1s² 2p⁶"],0,"2 + 2 + 4 = 8."),
+  Q("Konfiguracije","Konfiguracija natrija (Z = 11) je …",["1s² 2s² 2p⁶ 3s¹","1s² 2s² 2p⁷","1s² 2s² 2p⁶ 3p¹"],0,"Po 2p pride 3s."),
+  Q("Konfiguracije","Kateri element ima konfiguracijo 1s² 2s² 2p⁶?",["neon","natrij","kisik"],0,"10 elektronov, vse polno: žlahtni plin."),
+  Q("Konfiguracije","Koliko samskih elektronov ima kisik?",["2","4","0"],0,"2p⁴: [↑↓][↑][↑]."),
+  Q("Konfiguracije","Koliko samskih elektronov ima dušik (2p³)?",["3","1","0"],0,"[↑][↑][↑] po Hundu."),
+  Q("Konfiguracije","Koliko samskih elektronov ima železo (3d⁶)?",["4","6","2"],0,"[↑↓][↑][↑][↑][↑]."),
+  Q("Konfiguracije","Krajši zapis za galij je …",["[Ar] 4s² 3d¹⁰ 4p¹","[Ne] 4s² 4p¹","[Kr] 4p¹"],0,"Argon je žlahtni plin pred galijem."),
+  Q("Konfiguracije","Katero področje PSE so 1. in 2. skupina?",["s-področje","p-področje","d-področje"],0,"Zadnji elektron gre v s-orbitalo."),
+  Q("Konfiguracije","V kateri periodi so 3d-orbitale?",["v 4. periodi","v 3. periodi","v 5. periodi"],0,"Številka d je za 1 manjša od periode."),
+  Q("Konfiguracije","Element ima konfiguracijo [Ne] 3s² 3p⁵. Kateri je?",["klor","fosfor","argon"],0,"10 + 2 + 5 = 17 = klor.")
+];
+
+const quizBox = $("quiz");
+let qList = [], qi = 0, results = [];
+function chooseScreen(){
+  quizBox.innerHTML = "";
+  quizBox.appendChild(el("h3", null, "Kaj boš vadil?"));
+  quizBox.appendChild(el("p", {class:"muted"}, "Vprašanja in odgovori so vsakič premešani."));
+  const wrap = el("div", {class:"choose"});
+  const row1 = el("div", {class:"row"});
+  const big = [["Vse", Object.keys(GROUPS).reduce(function(a,k){ return a.concat(GROUPS[k]); }, [])]].concat(Object.keys(GROUPS).map(function(k){ return [k, GROUPS[k]]; }));
+  big.forEach(function(g, i){
+    const list = QUIZ.filter(function(q){ return g[1].indexOf(q.t)>=0; });
+    const b = el("button", {class:"cbtn"+(i===0?" big":""), type:"button"}, esc(g[0])+' <span>('+list.length+')</span>');
+    b.addEventListener("click", function(){ startQuiz(list); });
+    row1.appendChild(b);
+  });
+  wrap.appendChild(row1);
+  wrap.appendChild(el("p", {class:"muted"}, "Ali izberi samo eno temo:"));
+  const row2 = el("div", {class:"row"});
+  big[0][1].forEach(function(t){
+    const list = QUIZ.filter(function(q){ return q.t===t; });
+    const b = el("button", {class:"cbtn", type:"button"}, esc(t)+' <span>('+list.length+')</span>');
+    b.addEventListener("click", function(){ startQuiz(list); });
+    row2.appendChild(b);
+  });
+  wrap.appendChild(row2);
+  const r3 = el("div", {class:"row"});
+  const quick = el("button", {class:"cbtn", type:"button"}, "⚡ Hitri test: 15 naključnih");
+  quick.addEventListener("click", function(){ startQuiz(shuffle(QUIZ).slice(0,15)); });
+  r3.appendChild(quick); wrap.appendChild(r3);
+  quizBox.appendChild(wrap);
+}
+function startQuiz(list){ qList = shuffle(list); qi = 0; results = []; renderQ(); quizBox.scrollIntoView({behavior:"smooth", block:"start"}); }
+function renderQ(){
+  if(qi >= qList.length){ renderResults(); return; }
+  const q = qList[qi];
+  quizBox.innerHTML = "";
+  quizBox.appendChild(el("div", {class:"qmeta"}, '<span class="tag">'+esc(q.t)+'</span><span class="muted">Vprašanje '+(qi+1)+' / '+qList.length+'</span>'));
+  quizBox.appendChild(el("div", {class:"bar", "aria-hidden":"true"}, '<i style="width:'+Math.round(qi/qList.length*100)+'%"></i>'));
+  quizBox.appendChild(el("p", {class:"qtext"}, esc(q.q)));
+  const opts = el("div", {class:"qopts"});
+  const vsiljivec = /vsiljivca/.test(q.q);
+  const order = vsiljivec ? q.o.map(function(txt,i){ return {txt:txt,i:i}; }) : shuffle(q.o.map(function(txt, i){ return {txt:txt, i:i}; }));
+  const btns = [];
+  order.forEach(function(item){
+    const b = el("button", {class:"qopt", type:"button"}, esc(item.txt));
+    b.dataset.i = item.i;
+    b.addEventListener("click", function(){
+      const ok = item.i === q.a;
+      results.push({q:q, ok:ok});
+      btns.forEach(function(x){ x.disabled = true; if(+x.dataset.i===q.a) x.classList.add("right"); });
+      if(!ok) b.classList.add("wrongpick");
+      quizBox.appendChild(el("div", {class:"explain "+(ok?"ok":"no"), role:"status"}, (ok ? "<b>Pravilno!</b> " : "<b>Ne čisto.</b> Pravilno je: <b>"+esc(q.o[q.a])+"</b>. ") + esc(q.e)));
+      const nb = el("button", {class:"btn primary", type:"button"}, qi+1 < qList.length ? "Naprej" : "Poglej rezultat");
+      nb.addEventListener("click", function(){ qi++; renderQ(); });
+      const bb = el("div", {class:"btns"}); bb.appendChild(nb); quizBox.appendChild(bb);
+      nb.focus();
+    });
+    btns.push(b); opts.appendChild(b);
+  });
+  quizBox.appendChild(opts);
+  const stop = el("button", {class:"btn", type:"button"}, "Nazaj na izbiro teme");
+  stop.addEventListener("click", chooseScreen);
+  const sb = el("div", {class:"btns"}); sb.appendChild(stop); quizBox.appendChild(sb);
+}
+const TOPIC_LINK = {"Kemija in eksperiment":"s1","Pripomočki in varnost":"lab","GHS in stavki":"ghs","Toksikologija":"s5","Delci v atomu":"s6","Z, A in izotopi":"igra","Relativna atomska masa":"ar-sec","Ioni":"s9","Periodni sistem":"pse-sec","Orbitale in pravila":"orb-sec","Konfiguracije":"orb-sec"};
+function renderResults(){
+  quizBox.innerHTML = "";
+  const right = results.filter(function(r){ return r.ok; }).length;
+  quizBox.appendChild(el("h3", null, "Rezultat: " + right + " / " + results.length + " (" + Math.round(right/results.length*100) + " %)"));
+  const order = Object.keys(GROUPS).reduce(function(a,k){ return a.concat(GROUPS[k]); }, []);
+  const topics = order.filter(function(t){ return results.some(function(r){ return r.q.t===t; }); });
+  quizBox.appendChild(el("p", {class:"muted"}, "Po temah (klikni temo za ponovitev snovi):"));
+  topics.forEach(function(t){
+    const rs = results.filter(function(r){ return r.q.t===t; });
+    const ok = rs.filter(function(r){ return r.ok; }).length;
+    const pct = ok / rs.length;
+    const cls = pct >= .8 ? "g" : (pct >= .5 ? "w" : "b");
+    const label = pct >= .8 ? "obvladaš" : (pct >= .5 ? "še malo vadi" : "vadi podrobno");
+    quizBox.appendChild(el("div", {class:"res-row"},
+      '<span><a href="#'+TOPIC_LINK[t]+'"><b>'+esc(t)+'</b></a> '+ok+' / '+rs.length+'</span>'+
+      '<span class="bar"><i class="'+cls+'" style="width:'+Math.round(pct*100)+'%"></i></span>'+
+      '<span class="pill '+cls+'">'+label+'</span>'));
+  });
+  const wrong = results.filter(function(r){ return !r.ok; });
+  if(wrong.length){
+    quizBox.appendChild(el("h3", null, "To moraš še vaditi"));
+    const wl = el("div", {class:"wronglist"});
+    wrong.forEach(function(r){
+      wl.appendChild(el("div", null, '<p><b>'+esc(r.q.q)+'</b></p><p>Pravilno: <span class="fix">'+esc(r.q.o[r.q.a])+'</span></p><p class="muted">'+esc(r.q.e)+'</p>'));
+    });
+    quizBox.appendChild(wl);
+  } else {
+    quizBox.appendChild(el("p", null, "Vse pravilno. Odlično!"));
+  }
+  const bb = el("div", {class:"btns"});
+  if(wrong.length){
+    const rb = el("button", {class:"btn primary", type:"button"}, "Ponovi samo napačne");
+    rb.addEventListener("click", function(){ startQuiz(wrong.map(function(r){ return r.q; })); });
+    bb.appendChild(rb);
+  }
+  const ab = el("button", {class:"btn", type:"button"}, "Izberi drugo temo");
+  ab.addEventListener("click", chooseScreen);
+  bb.appendChild(ab);
+  quizBox.appendChild(bb);
+}
+chooseScreen();
+})();
+</script>
+</body>
+</html>
